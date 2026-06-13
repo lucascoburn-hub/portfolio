@@ -27,8 +27,8 @@
   --sky:         #D6E0E2;
   --storm:       #686867;
 
-  --font-bold:   'Articulat CF', 'Arial Black', Arial, sans-serif;
-  --font-med:    'Articulat CF', Arial, sans-serif;
+  --font-bold:   'Articulat CF', sans-serif;
+  --font-med:    'Articulat CF', sans-serif;
   --font-serif:  'Times New Roman', Times, serif;
 }
 
@@ -157,7 +157,7 @@ button { cursor: pointer; border: none; background: none; }
   font-family: var(--font-bold);
   font-weight: 700;
   font-size: clamp(4rem, 11vw, 10rem);
-  letter-spacing: 0.06em;
+  letter-spacing: -0.06em;
   text-transform: uppercase;
   color: var(--cloud);
   line-height: 0.9;
@@ -367,7 +367,7 @@ button { cursor: pointer; border: none; background: none; }
   font-family: var(--font-bold);
   font-weight: 700;
   font-size: clamp(4rem, 9vw, 8rem);
-  letter-spacing: 0.04em;
+  letter-spacing: -0.06em;
   text-transform: uppercase;
   color: var(--cloud);
   line-height: 0.92;
@@ -578,7 +578,7 @@ button { cursor: pointer; border: none; background: none; }
   font-weight: 700;
   font-size: clamp(2.5rem, 5vw, 4.5rem);
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.06em;
   color: var(--midnight);
   line-height: 0.95;
 }
@@ -658,7 +658,7 @@ button { cursor: pointer; border: none; background: none; }
   font-weight: 700;
   font-size: clamp(1.1rem, 1.8vw, 1.4rem);
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.06em;
   color: var(--midnight);
   line-height: 1.1;
 }
@@ -720,7 +720,7 @@ button { cursor: pointer; border: none; background: none; }
   font-family: var(--font-bold);
   font-weight: 700;
   font-size: clamp(3rem, 9vw, 7.5rem);
-  letter-spacing: 0.04em;
+  letter-spacing: -0.06em;
   text-transform: uppercase;
   color: var(--cloud);
   line-height: 0.92;
@@ -839,7 +839,7 @@ button { cursor: pointer; border: none; background: none; }
   font-size: 1.6rem; line-height: 1;
   color: var(--cloud); opacity: 0.5;
   transition: opacity 0.2s; cursor: pointer;
-  font-family: Arial, sans-serif; flex-shrink: 0;
+  font-family: var(--font-med); flex-shrink: 0;
 }
 .video-modal__close:hover { opacity: 1; }
 
