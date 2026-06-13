@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lucas Coburn — Creative Director & Video Editor</title>
+  <meta name="description" content="Melbourne-based creative director and video editor. Building creator brands through strategic content and precise editing.">
+
+  <style>
+    @font-face {
+      font-family: 'Articulat CF';
+      src: url('assets/fonts/ArticulatCF-Bold.woff2') format('woff2'),
+           url('assets/fonts/ArticulatCF-Bold.woff') format('woff');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Articulat CF';
+      src: url('assets/fonts/ArticulatCF-Medium.woff2') format('woff2'),
+           url('assets/fonts/ArticulatCF-Medium.woff') format('woff');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+  </style>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <a href="#hero" class="nav__logo">Lucas Coburn</a>
+    <ul class="nav__links" id="nav-links">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#resources">Resources</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="nav__hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero__overlay" aria-hidden="true"></div>
+    <div class="hero__content">
+      <p class="hero__location">Melbourne, Australia</p>
+      <div class="hero__mid">
+        <h1 class="hero__name">Lucas<br>Coburn</h1>
+        <ul class="hero__roles" aria-label="Roles">
+          <li><span class="role-num">01</span>Video Editor</li>
+          <li><span class="role-num">02</span>Creative Director</li>
+          <li><span class="role-num">03</span>Storyteller</li>
+        </ul>
+      </div>
+      <p class="hero__tagline">have a vision? lets bring it to life.</p>
+      <div class="hero__socials">
+        <a class="hero__social-btn" href="https://www.instagram.com/lucas.coburn/" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg class="hero__social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+        </a>
+        <a class="hero__social-btn" href="https://www.linkedin.com/in/lucascoburn/" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <svg class="hero__social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="3"/>
+            <line x1="8" y1="11" x2="8" y2="17"/>
+            <line x1="8" y1="7.5" x2="8" y2="8.5"/>
+            <path d="M12 17v-4a2 2 0 0 1 4 0v4"/>
+            <line x1="12" y1="11" x2="12" y2="17"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+    <div class="hero__scroll" aria-hidden="true">
+      <span>scroll</span>
+      <div class="hero__scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats" id="stats">
+    <div class="stats__bg-wrap">
+      <img src="assets/backgrounds/bg2.jpg" alt="" class="stats__bg" aria-hidden="true">
+    </div>
+    <div class="stats__overlay" aria-hidden="true"></div>
+    <div class="stats__inner">
+      <div class="stats__item">
+        <div class="stats__chart">
+          <svg viewBox="0 0 200 62" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="grad-views" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#D6E0E2" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#D6E0E2" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path class="chart-area" d="M0,60 C40,59 70,56 100,46 C130,34 162,14 200,0 L200,62 L0,62 Z" fill="url(#grad-views)" opacity="0"/>
+            <path class="chart-line" d="M0,60 C40,59 70,56 100,46 C130,34 162,14 200,0" fill="none"/>
+            <circle class="chart-dot" cx="200" cy="0" r="4" fill="#D6E0E2" opacity="0"/>
+          </svg>
+        </div>
+        <div class="stats__number"><span class="counter" data-target="50" data-suffix="M+">0</span></div>
+        <p class="stats__label">Views Generated</p>
+      </div>
+      <div class="stats__divider" aria-hidden="true"></div>
+      <div class="stats__item">
+        <div class="stats__chart">
+          <svg viewBox="0 0 200 62" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="grad-projects" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#D6E0E2" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#D6E0E2" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path class="chart-area" d="M0,60 C35,58 65,52 100,40 C135,28 168,16 200,6 L200,62 L0,62 Z" fill="url(#grad-projects)" opacity="0"/>
+            <path class="chart-line" d="M0,60 C35,58 65,52 100,40 C135,28 168,16 200,6" fill="none"/>
+            <circle class="chart-dot" cx="200" cy="6" r="4" fill="#D6E0E2" opacity="0"/>
+          </svg>
+        </div>
+        <div class="stats__number"><span class="counter" data-target="500" data-suffix="+">0</span></div>
+        <p class="stats__label">Projects Completed</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED WORKS INTRO -->
+  <section class="featured-intro" id="work">
+    <div class="featured-intro__overlay" aria-hidden="true"></div>
+    <div class="featured-intro__content fade-up">
+      <p class="featured-intro__eyebrow">Selected Work</p>
+      <h2 class="featured-intro__title">Featured<br>Works</h2>
+    </div>
+  </section>
+
+  <!-- CLIENT SECTIONS -->
+  <div class="clients-wrapper">
+
+    <!-- JAMES MAGNUSSEN -->
+    <section class="client-section client-section--right" id="james">
+      <a class="client-section__media" href="https://www.instagram.com/james.magnussen/" target="_blank" rel="noopener" aria-label="James Magnussen on Instagram">
+        <div class="client-section__img-wrap">
+          <img src="assets/clients/james-magnussen-cover.jpg" alt="James Magnussen" loading="lazy">
+        </div>
+        <span class="client-section__ig-hint">Instagram ↗</span>
+      </a>
+      <div class="client-section__content">
+        <div class="client-section__tags">
+          <span class="tag">Creative Direction</span>
+          <span class="tag">Editing</span>
+        </div>
+        <h2 class="client-section__name">James Magnussen</h2>
+        <p class="client-section__agency">Nitid Media</p>
+        <p class="client-section__desc">Started working with James six months before the Enhanced Games in Las Vegas. Focused on building his short-form presence from the ground up, producing videos that hit over 7 million views. His audience grew from 70K to nearly 140K followers by the time the Games kicked off in May 2026.</p>
+        <div class="client-section__metric">
+          <span class="metric__from">74K</span>
+          <span class="metric__arrow">→</span>
+          <span class="metric__to">140K</span>
+          <span class="metric__period">followers · 6 months</span>
+        </div>
+        <button class="view-work-btn" data-client="james">View Work →</button>
+      </div>
+    </section>
+
+    <!-- BRUNO CASANOVAS -->
+    <section class="client-section client-section--left" id="bruno">
+      <a class="client-section__media" href="https://www.instagram.com/brunocasanovas/" target="_blank" rel="noopener" aria-label="Bruno Casanovas on Instagram">
+        <div class="client-section__img-wrap">
+          <img src="assets/clients/bruno-casanovas.jpg" alt="Bruno Casanovas" loading="lazy">
+        </div>
+        <span class="client-section__ig-hint">Instagram ↗</span>
+      </a>
+      <div class="client-section__content">
+        <div class="client-section__tags"><span class="tag">Editing</span></div>
+        <h2 class="client-section__name">Bruno Casanovas</h2>
+        <p class="client-section__desc">Bruno Casanovas is the founder of a popular Spanish streetwear brand with a strong Instagram following. I worked on cutting his existing content into polished short-form edits — engaging clips built to capture attention and grow his audience.</p>
+        <div class="client-section__metric">
+          <span class="metric__to">185K</span>
+          <span class="metric__period">followers</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FIN KWONG -->
+    <section class="client-section client-section--right" id="fin">
+      <a class="client-section__media" href="https://www.instagram.com/fin.kwong/" target="_blank" rel="noopener" aria-label="Fin Kwong on Instagram">
+        <div class="client-section__img-wrap">
+          <img src="assets/clients/fin-kwong-cover.jpg" alt="Fin Kwong" loading="lazy">
+        </div>
+        <span class="client-section__ig-hint">Instagram ↗</span>
+      </a>
+      <div class="client-section__content">
+        <div class="client-section__tags"><span class="tag">Editing</span></div>
+        <h2 class="client-section__name">Fin Kwong</h2>
+        <p class="client-section__agency">Nitid Media</p>
+        <p class="client-section__desc">Began editing for Fin in 2025, helping to steadily build his online presence and refine his short-form content. His audience has grown to almost 40K followers.</p>
+        <div class="client-section__metric">
+          <span class="metric__to">40K</span>
+          <span class="metric__period">followers</span>
+        </div>
+        <button class="view-work-btn" data-client="fin">View Work →</button>
+      </div>
+    </section>
+
+    <!-- NOEL KJELLEMAR -->
+    <section class="client-section client-section--left" id="noel">
+      <a class="client-section__media" href="https://www.instagram.com/noelkjellemar/" target="_blank" rel="noopener" aria-label="Noel Kjellemar on Instagram">
+        <div class="client-section__img-wrap">
+          <img src="assets/clients/noel-kjellemar.jpg" alt="Noel Kjellemar" loading="lazy">
+        </div>
+        <span class="client-section__ig-hint">Instagram ↗</span>
+      </a>
+      <div class="client-section__content">
+        <div class="client-section__tags"><span class="tag">Editing</span></div>
+        <h2 class="client-section__name">Noel Kjellemar</h2>
+        <p class="client-section__agency">Nitid Media</p>
+        <p class="client-section__desc">Helped build Noel's personal brand from the ground up. Editing his content consistently laid the foundation he needed to show up online — growing his presence from scratch to 8,500 followers.</p>
+        <div class="client-section__metric">
+          <span class="metric__from">500</span>
+          <span class="metric__arrow">→</span>
+          <span class="metric__to">8.5K</span>
+          <span class="metric__period">followers</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FIRST OR NOTHING -->
+    <section class="client-section client-section--right" id="fon">
+      <a class="client-section__media" href="https://www.instagram.com/fon/" target="_blank" rel="noopener" aria-label="First or Nothing on Instagram">
+        <div class="client-section__img-wrap">
+          <img src="assets/clients/fon-cover.webp" alt="First or Nothing" loading="lazy">
+        </div>
+        <span class="client-section__ig-hint">Instagram ↗</span>
+      </a>
+      <div class="client-section__content">
+        <div class="client-section__tags"><span class="tag">Editing</span></div>
+        <h2 class="client-section__name">First or Nothing</h2>
+        <p class="client-section__agency">Nitid Media</p>
+        <p class="client-section__desc">Helped edit the content for First or Nothing, the fastest-growing supplement brand in Australia. Built a short-form presence that connected with their audience and drove real growth.</p>
+        <div class="client-section__metric">
+          <span class="metric__to">31.5K</span>
+          <span class="metric__period">followers</span>
+        </div>
+        <button class="view-work-btn" data-client="fon">View Work →</button>
+      </div>
+    </section>
+
+    <!-- ETHAN NGUYEN -->
+    <section class="client-section client-section--left" id="ethan">
+      <a class="client-section__media" href="https://www.instagram.com/ethannguyen.io/" target="_blank" rel="noopener" aria-label="Ethan Nguyen on Instagram">
+        <div class="client-section__img-wrap">
+          <img src="assets/clients/ethan-nguyen.jpg" alt="Ethan Nguyen" loading="lazy">
+        </div>
+        <span class="client-section__ig-hint">Instagram ↗</span>
+      </a>
+      <div class="client-section__content">
+        <div class="client-section__tags"><span class="tag">Editing</span></div>
+        <h2 class="client-section__name">Ethan Nguyen</h2>
+        <p class="client-section__agency">Nitid Media</p>
+        <p class="client-section__desc">Video editor for Ethan Nguyen, who coaches people on building and scaling their own AI advertising agencies. Responsible for editing his content and helping him maintain a consistent online presence.</p>
+        <div class="client-section__metric">
+          <span class="metric__to">5K</span>
+          <span class="metric__period">followers</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- EMIRHAN ORUC -->
+    <section class="client-section client-section--right" id="emirhan">
+      <a class="client-section__media" href="https://www.instagram.com/10feetstudios/" target="_blank" rel="noopener" aria-label="Emirhan Oruc on Instagram">
+        <div class="client-section__img-wrap client-section__img-wrap--fill">
+          <img src="assets/clients/emirhan-oruc.svg" alt="Emirhan Oruc" loading="lazy">
+        </div>
+        <span class="client-section__ig-hint">Instagram ↗</span>
+      </a>
+      <div class="client-section__content">
+        <div class="client-section__tags">
+          <span class="tag">Creative Direction</span>
+          <span class="tag">Editing</span>
+        </div>
+        <h2 class="client-section__name">Emirhan Oruc</h2>
+        <p class="client-section__desc">Worked on creative direction and video editing for Emirhan, helping to grow both his long-form YouTube channel and his Instagram presence.</p>
+        <div class="client-section__metric">
+          <span class="metric__to">32.2K</span>
+          <span class="metric__period">followers</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- CERCA -->
+    <section class="client-section client-section--left" id="cerca">
+      <a class="client-section__media" href="https://www.instagram.com/cercadating/" target="_blank" rel="noopener" aria-label="Cerca on Instagram">
+        <div class="client-section__img-wrap client-section__img-wrap--logo">
+          <img src="assets/clients/cerca.png" alt="Cerca" loading="lazy">
+        </div>
+        <span class="client-section__ig-hint">Instagram ↗</span>
+      </a>
+      <div class="client-section__content">
+        <div class="client-section__tags"><span class="tag">Editing</span></div>
+        <h2 class="client-section__name">Cerca</h2>
+        <p class="client-section__desc">Cerca is a mutual-based dating app. Responsible for their short-form ad content — building a content presence that speaks to their audience and drives installs.</p>
+      </div>
+    </section>
+
+  </div><!-- /clients-wrapper -->
+
+  <!-- DIGITAL RESOURCES -->
+  <section class="resources" id="resources">
+    <div class="resources__inner">
+      <div class="resources__header fade-up">
+        <p class="resources__eyebrow">For the community</p>
+        <h2 class="resources__title">Digital<br>Resources</h2>
+      </div>
+      <div class="resources__grid">
+        <a class="resource-card fade-up" href="https://coburnian46.gumroad.com/l/easynull" target="_blank" rel="noopener">
+          <div class="resource-card__thumb resource-card__thumb--plugin">
+            <span class="resource-card__thumb-num">01</span>
+            <span class="resource-card__thumb-label">Plugin</span>
+          </div>
+          <div class="resource-card__body">
+            <p class="resource-card__tag">After Effects</p>
+            <h3 class="resource-card__name">Easy Null Plugin</h3>
+            <p class="resource-card__desc">A plugin built to simplify null object workflows for video editors. Clean up your compositions and work faster.</p>
+            <span class="resource-card__cta">Unlock This →</span>
+          </div>
+        </a>
+        <a class="resource-card fade-up" href="https://coburnian46.gumroad.com/l/vrixbx" target="_blank" rel="noopener">
+          <div class="resource-card__thumb resource-card__thumb--playlist">
+            <span class="resource-card__thumb-num">02</span>
+            <span class="resource-card__thumb-label">Playlists</span>
+          </div>
+          <div class="resource-card__body">
+            <p class="resource-card__tag">Spotify</p>
+            <h3 class="resource-card__name">Playlists for Video Editors</h3>
+            <p class="resource-card__desc">Curated playlists built specifically for long editing sessions. The right energy for every phase of the cut.</p>
+            <span class="resource-card__cta">Unlock This →</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <div class="contact__overlay" aria-hidden="true"></div>
+    <div class="contact__inner fade-up">
+      <p class="contact__eyebrow">Get in touch</p>
+      <h2 class="contact__headline">Connect<br>with Me</h2>
+      <p class="contact__sub">Got a question or project in mind? Lets chat.</p>
+    </div>
+    <!-- Cursor-following Instagram button -->
+    <a class="cursor-btn" id="cursor-btn" href="https://www.instagram.com/lucas.coburn/" target="_blank" rel="noopener" aria-label="Lucas Coburn on Instagram">
+      <span class="cursor-btn__text">Connect ↗</span>
+    </a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <span>© 2026 Lucas Coburn</span>
+    <span>Melbourne, Australia</span>
+  </footer>
+
+  <!-- VIDEO MODAL -->
+  <div class="modal-backdrop" id="modal-backdrop"></div>
+  <div class="video-modal" id="video-modal" role="dialog" aria-modal="true" aria-label="Work videos">
+    <div class="video-modal__header">
+      <p class="video-modal__client-name" id="modal-client-name"></p>
+      <button class="video-modal__close" id="modal-close" aria-label="Close">×</button>
+    </div>
+    <div class="video-modal__track" id="modal-track"></div>
+    <p class="video-modal__hint">scroll to browse</p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+.DS_Store
+Thumbs.db
+*.log
+.claude/
+three-scene.js
+FFMPEG_COMMANDS.md
