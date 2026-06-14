@@ -152,12 +152,50 @@ function openModal(clientKey) {
 
     const vid = document.createElement('video');
     vid.src         = src;
-    vid.controls    = true;
+    vid.controls    = false;
     vid.playsinline = true;
     vid.preload     = 'metadata';
-    // NOT muted — user can hear audio
 
+    // Custom controls overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'vid-overlay';
+
+    // Click anywhere on video to play/pause
+    item.addEventListener('click', () => {
+      if (vid.paused) vid.play().catch(() => {});
+      else vid.pause();
+    });
+
+    // Pause/play button
+    const pauseBtn = document.createElement('button');
+    pauseBtn.className = 'vid-btn vid-btn--pause';
+    pauseBtn.setAttribute('aria-label', 'Pause');
+    pauseBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="3" width="4" height="18" rx="1"/><rect x="15" y="3" width="4" height="18" rx="1"/></svg>`;
+    pauseBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (vid.paused) { vid.play().catch(() => {}); pauseBtn.setAttribute('aria-label','Pause'); }
+      else { vid.pause(); pauseBtn.setAttribute('aria-label','Play'); }
+    });
+
+    // Update icon on play/pause state change
+    vid.addEventListener('play',  () => { pauseBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="3" width="4" height="18" rx="1"/><rect x="15" y="3" width="4" height="18" rx="1"/></svg>`; });
+    vid.addEventListener('pause', () => { pauseBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>`; });
+
+    // Fullscreen button
+    const fsBtn = document.createElement('button');
+    fsBtn.className = 'vid-btn vid-btn--fs';
+    fsBtn.setAttribute('aria-label', 'Fullscreen');
+    fsBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>`;
+    fsBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (vid.requestFullscreen) vid.requestFullscreen();
+      else if (vid.webkitEnterFullscreen) vid.webkitEnterFullscreen();
+    });
+
+    overlay.appendChild(pauseBtn);
+    overlay.appendChild(fsBtn);
     item.appendChild(vid);
+    item.appendChild(overlay);
     modalTrack.appendChild(item);
   });
 

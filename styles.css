@@ -883,6 +883,37 @@ button { cursor: pointer; border: none; background: none; }
 }
 .modal-video-item video { width: 100%; height: 100%; object-fit: cover; display: block; }
 
+/* Custom video controls */
+.vid-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+.modal-video-item {
+  position: relative;
+}
+.modal-video-item:hover .vid-overlay { opacity: 1; pointer-events: auto; }
+.vid-btn {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  width: 38px; height: 38px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  transition: background 0.2s;
+}
+.vid-btn:hover { background: rgba(255,255,255,0.3); }
+.vid-btn svg { width: 16px; height: 16px; }
+
 .video-modal__hint {
   font-family: var(--font-med);
   font-weight: 500;
