@@ -41,14 +41,12 @@ function animateStats(section) {
   const duration = 1800;
   const pause    = 3000;
 
-  // Collect counters
   const counters = Array.from(section.querySelectorAll('.counter')).map(el => ({
     el,
     target: parseInt(el.dataset.target, 10),
     suffix: el.dataset.suffix || '',
   }));
 
-  // Collect charts
   const charts = Array.from(section.querySelectorAll('.stats__chart svg')).map(svg => {
     const line = svg.querySelector('.chart-line');
     const area = svg.querySelector('.chart-area');
@@ -59,7 +57,6 @@ function animateStats(section) {
   });
 
   function runCycle() {
-    // Reset everything
     counters.forEach(({ el, suffix }) => { el.textContent = '0' + suffix; });
     charts.forEach(({ line, area, dot, len }) => {
       if (line) line.style.strokeDashoffset = len;
@@ -73,12 +70,10 @@ function animateStats(section) {
       const p     = Math.min((now - start) / duration, 1);
       const eased = 1 - Math.pow(1 - p, 3);
 
-      // Counters — same eased progress
       counters.forEach(({ el, target, suffix }) => {
         el.textContent = Math.round(eased * target) + suffix;
       });
 
-      // Charts — same eased progress
       charts.forEach(({ line, area, dot, len }) => {
         if (line) line.style.strokeDashoffset = len * (1 - eased);
         if (area) area.style.opacity = Math.max(0, (p - 0.2) / 0.8) * 0.45;
@@ -112,7 +107,7 @@ const statsObserver = new IntersectionObserver(entries => {
 const statsSection = document.getElementById('stats');
 if (statsSection) statsObserver.observe(statsSection);
 
-// ── VIDEO MODAL ────────────────────────────────────────────────
+// ── VIDEO MODAL + LIGHTBOX ─────────────────────────────────────
 const clientVideos = {
   james: [
     'assets/work/james-1.mp4',
@@ -134,128 +129,112 @@ const clientLabels = {
   fon:   'First or Nothing',
 };
 
-const backdrop       = document.getElementById('modal-backdrop');
-const modal          = document.getElementById('video-modal');
-const modalTrack     = document.getElementById('modal-track');
-const modalClose     = document.getElementById('modal-close');
+const backdrop        = document.getElementById('modal-backdrop');
+const modal           = document.getElementById('video-modal');
+const modalTrack      = document.getElementById('modal-track');
+const modalClose      = document.getElementById('modal-close');
 const modalClientName = document.getElementById('modal-client-name');
+const lightbox        = document.getElementById('vid-lightbox');
+const lightboxClose   = document.getElementById('vid-lightbox-close');
+const lightboxVideo   = document.getElementById('vid-lightbox-video');
 
+// ── Lightbox ───────────────────────────────────────────────────
+function openLightbox(src) {
+  lightboxVideo.src = src;
+  lightbox.classList.add('open');
+  lightboxVideo.play().catch(() => {});
+}
+
+function closeLightbox() {
+  lightbox.classList.remove('open');
+  lightboxVideo.pause();
+  lightboxVideo.src = '';
+}
+
+lightboxClose.addEventListener('click', e => {
+  e.stopPropagation();
+  closeLightbox();
+});
+
+lightbox.addEventListener('click', e => {
+  if (e.target === lightbox) closeLightbox();
+});
+
+// ── Modal ──────────────────────────────────────────────────────
 function openModal(clientKey) {
   const videos = clientVideos[clientKey];
   if (!videos) return;
 
-  // Populate track
   modalTrack.innerHTML = '';
   videos.forEach(src => {
-    const item  = document.createElement('div');
+    const item = document.createElement('div');
     item.className = 'modal-video-item';
 
-    const vid = document.createElement('video');
-    vid.src         = src;
-    vid.controls    = false;
-    vid.playsinline = true;
-    vid.preload     = 'metadata';
+    // Static thumbnail — shows first frame, no controls, not playing
+    const thumb = document.createElement('video');
+    thumb.src         = src;
+    thumb.controls    = false;
+    thumb.playsinline = true;
+    thumb.preload     = 'metadata';
+    thumb.muted       = true;
 
-    // Custom controls overlay
-    const overlay = document.createElement('div');
-    overlay.className = 'vid-overlay';
+    // Play icon overlay
+    const playIcon = document.createElement('div');
+    playIcon.className = 'modal-play-icon';
+    playIcon.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>`;
 
-    // Click anywhere on video to play/pause
-    item.addEventListener('click', () => {
-      if (vid.paused) vid.play().catch(() => {});
-      else vid.pause();
-    });
+    // Click thumbnail → expand into lightbox and play
+    item.addEventListener('click', () => openLightbox(src));
 
-    // Pause/play button
-    const pauseBtn = document.createElement('button');
-    pauseBtn.className = 'vid-btn vid-btn--pause';
-    pauseBtn.setAttribute('aria-label', 'Pause');
-    pauseBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="3" width="4" height="18" rx="1"/><rect x="15" y="3" width="4" height="18" rx="1"/></svg>`;
-    pauseBtn.addEventListener('click', e => {
-      e.stopPropagation();
-      if (vid.paused) { vid.play().catch(() => {}); pauseBtn.setAttribute('aria-label','Pause'); }
-      else { vid.pause(); pauseBtn.setAttribute('aria-label','Play'); }
-    });
-
-    // Update icon on play/pause state change
-    vid.addEventListener('play',  () => { pauseBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="3" width="4" height="18" rx="1"/><rect x="15" y="3" width="4" height="18" rx="1"/></svg>`; });
-    vid.addEventListener('pause', () => { pauseBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>`; });
-
-    // Fullscreen button
-    const fsBtn = document.createElement('button');
-    fsBtn.className = 'vid-btn vid-btn--fs';
-    fsBtn.setAttribute('aria-label', 'Fullscreen');
-    fsBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>`;
-    fsBtn.addEventListener('click', e => {
-      e.stopPropagation();
-      if (vid.requestFullscreen) vid.requestFullscreen();
-      else if (vid.webkitEnterFullscreen) vid.webkitEnterFullscreen();
-    });
-
-    overlay.appendChild(pauseBtn);
-    overlay.appendChild(fsBtn);
-    item.appendChild(vid);
-    item.appendChild(overlay);
+    item.appendChild(thumb);
+    item.appendChild(playIcon);
     modalTrack.appendChild(item);
   });
 
   modalClientName.textContent = clientLabels[clientKey] || '';
-
   backdrop.classList.add('open');
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';
-
-  // Auto-play first video
-  const firstVid = modalTrack.querySelector('video');
-  if (firstVid) firstVid.play().catch(() => {});
 }
 
 function closeModal() {
+  closeLightbox();
   backdrop.classList.remove('open');
   modal.classList.remove('open');
   document.body.style.overflow = '';
-
-  // Pause and clear all videos to stop audio
-  modalTrack.querySelectorAll('video').forEach(v => {
-    v.pause();
-    v.src = '';
-  });
+  modalTrack.querySelectorAll('video').forEach(v => { v.src = ''; });
   modalTrack.innerHTML = '';
 }
 
-// Open on "View Work" button click
 document.querySelectorAll('.view-work-btn').forEach(btn => {
   btn.addEventListener('click', e => {
-    e.stopPropagation(); // don't trigger the Instagram link on the media pane
+    e.stopPropagation();
     openModal(btn.dataset.client);
   });
 });
 
-// Close on backdrop or × button
 backdrop.addEventListener('click', closeModal);
 modalClose.addEventListener('click', closeModal);
-
-// Close on Escape key
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeModal();
-});
-
-// Prevent modal click from closing when clicking inside
 modal.addEventListener('click', e => e.stopPropagation());
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (lightbox.classList.contains('open')) closeLightbox();
+    else closeModal();
+  }
+});
 
 // ── CURSOR-FOLLOWING BUTTON (Contact section) ─────────────────
 (function () {
-  const contact   = document.getElementById('contact');
-  const btn       = document.getElementById('cursor-btn');
+  const contact = document.getElementById('contact');
+  const btn     = document.getElementById('cursor-btn');
   if (!contact || !btn) return;
 
-  // Only activate on non-touch devices
   if (!window.matchMedia('(hover: hover)').matches) return;
 
   let targetX = 0, targetY = 0;
   let currentX = 0, currentY = 0;
   let raf = null;
-  let inside = false;
 
   function lerp(a, b, t) { return a + (b - a) * t; }
 
@@ -268,13 +247,11 @@ modal.addEventListener('click', e => e.stopPropagation());
   }
 
   contact.addEventListener('mouseenter', () => {
-    inside = true;
     btn.classList.add('is-visible');
     if (!raf) raf = requestAnimationFrame(animate);
   });
 
   contact.addEventListener('mouseleave', () => {
-    inside = false;
     btn.classList.remove('is-visible');
     cancelAnimationFrame(raf);
     raf = null;
@@ -286,13 +263,3 @@ modal.addEventListener('click', e => e.stopPropagation());
     targetY = e.clientY - rect.top;
   });
 })();
-
-// Pause non-visible videos as user scrolls through the modal track
-modalTrack.addEventListener('scroll', () => {
-  const trackRect = modalTrack.getBoundingClientRect();
-  modalTrack.querySelectorAll('video').forEach(vid => {
-    const r = vid.getBoundingClientRect();
-    const visible = r.left < trackRect.right && r.right > trackRect.left;
-    if (!visible) vid.pause();
-  });
-}, { passive: true });

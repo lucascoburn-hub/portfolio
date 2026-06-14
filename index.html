@@ -370,7 +370,12 @@
       <button class="video-modal__close" id="modal-close" aria-label="Close">×</button>
     </div>
     <div class="video-modal__track" id="modal-track"></div>
-    <p class="video-modal__hint">scroll to browse</p>
+    <p class="video-modal__hint">scroll to browse · click to play</p>
+  </div>
+  <!-- VIDEO LIGHTBOX (expands on thumbnail click) -->
+  <div class="vid-lightbox" id="vid-lightbox">
+    <button class="vid-lightbox__close" id="vid-lightbox-close" aria-label="Close video">×</button>
+    <video class="vid-lightbox__video" id="vid-lightbox-video" controls playsinline></video>
   </div>
 
   <script src="script.js"></script>
