@@ -32,7 +32,9 @@ const revealObserver = new IntersectionObserver(entries => {
   });
 }, { threshold: 0.12 });
 
-document.querySelectorAll('.fade-up').forEach(el => revealObserver.observe(el));
+document.querySelectorAll(
+  '.fade-up, .client-section__media, .client-section__content'
+).forEach(el => revealObserver.observe(el));
 
 // ── COUNTER + CHART ANIMATION (single shared rAF loop) ─────────
 function animateStats(section) {
@@ -110,14 +112,19 @@ const clientVideos = {
   james: [
     'assets/work/james-1.mp4',
     'assets/work/james-2.mp4',
+    'assets/work/james-3.mp4',
   ],
   fin: [
     'assets/work/fin-1.mp4',
     'assets/work/fin-2.mp4',
+    'assets/work/fin-3.mp4',
   ],
   fon: [
     'assets/work/fon-1.mp4',
     'assets/work/fon-2.mp4',
+  ],
+  bruno: [
+    'assets/work/bruno-1.mp4',
   ],
 };
 
@@ -125,6 +132,7 @@ const clientLabels = {
   james: 'James Magnussen',
   fin:   'Fin Kwong',
   fon:   'First or Nothing',
+  bruno: 'Bruno Casanovas',
 };
 
 const backdrop        = document.getElementById('modal-backdrop');

@@ -776,7 +776,7 @@ button { cursor: pointer; border: none; background: none; }
   width: 140px;
   height: 140px;
   border-radius: 50%;
-  background: var(--brand-blue);
+  background: var(--sky);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -801,7 +801,7 @@ button { cursor: pointer; border: none; background: none; }
   font-size: 0.65rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #fff;
+  color: var(--midnight);
   text-align: center;
   line-height: 1.4;
   user-select: none;
