@@ -32,9 +32,7 @@ const revealObserver = new IntersectionObserver(entries => {
   });
 }, { threshold: 0.12 });
 
-document.querySelectorAll(
-  '.fade-up, .client-section__media, .client-section__content'
-).forEach(el => revealObserver.observe(el));
+document.querySelectorAll('.fade-up').forEach(el => revealObserver.observe(el));
 
 // ── COUNTER + CHART ANIMATION (single shared rAF loop) ─────────
 function animateStats(section) {
@@ -223,6 +221,50 @@ document.addEventListener('keydown', e => {
     else closeModal();
   }
 });
+
+// ── CLIENT SECTION SCROLL FADE IN/OUT ─────────────────────────
+(function () {
+  const sections = Array.from(document.querySelectorAll('.client-section'));
+  if (!sections.length) return;
+
+  // Start invisible
+  sections.forEach(s => { s.style.opacity = '0'; });
+
+  let rafPending = false;
+
+  function updateFades() {
+    const vh = window.innerHeight;
+    sections.forEach(s => {
+      const rect = s.getBoundingClientRect();
+      const center = rect.top + rect.height / 2;
+
+      let opacity;
+      if (center > vh) {
+        opacity = 0; // below viewport
+      } else if (center > vh * 0.7) {
+        opacity = 1 - (center - vh * 0.7) / (vh - vh * 0.7); // fading in
+      } else if (center > vh * 0.3) {
+        opacity = 1; // fully visible
+      } else if (center > 0) {
+        opacity = center / (vh * 0.3); // fading out
+      } else {
+        opacity = 0; // above viewport
+      }
+
+      s.style.opacity = Math.max(0, Math.min(1, opacity));
+    });
+    rafPending = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!rafPending) {
+      rafPending = true;
+      requestAnimationFrame(updateFades);
+    }
+  }, { passive: true });
+
+  updateFades(); // run once on load
+})();
 
 // ── CURSOR-FOLLOWING BUTTON (Contact section) ─────────────────
 (function () {

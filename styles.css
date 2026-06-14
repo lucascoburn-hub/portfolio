@@ -27,6 +27,7 @@
   --sky:         #D6E0E2;
   --storm:       #686867;
 
+  --brand-blue:  #2563EB;
   --font-bold:   'Articulat CF', sans-serif;
   --font-med:    'Articulat CF', sans-serif;
   --font-serif:  'Times New Roman', Times, serif;
@@ -225,10 +226,30 @@ button { cursor: pointer; border: none; background: none; }
   color: var(--cream);
 }
 
+.hero__connect-btn {
+  display: inline-block;
+  margin-top: 28px;
+  padding: 14px 32px;
+  background: var(--brand-blue);
+  color: #fff;
+  font-family: var(--font-bold);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s;
+}
+.hero__connect-btn:hover {
+  background: #1d4fd8;
+  transform: translateY(-2px);
+}
+
 .hero__socials {
   display: flex;
   gap: 12px;
-  margin-top: 8px;
+  margin-top: 20px;
 }
 .hero__social-btn {
   display: flex;
@@ -755,7 +776,7 @@ button { cursor: pointer; border: none; background: none; }
   width: 140px;
   height: 140px;
   border-radius: 50%;
-  background: var(--cream);
+  background: var(--brand-blue);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -780,7 +801,7 @@ button { cursor: pointer; border: none; background: none; }
   font-size: 0.65rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--midnight);
+  color: #fff;
   text-align: center;
   line-height: 1.4;
   user-select: none;
