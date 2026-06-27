@@ -86,62 +86,61 @@
     </div>
   </section>
 
-  <!-- STATS -->
-  <section class="stats" id="stats">
-    <div class="stats__bg-wrap">
-      <img src="assets/backgrounds/bg2.jpg" alt="" class="stats__bg" aria-hidden="true">
-    </div>
-    <div class="stats__overlay" aria-hidden="true"></div>
-    <div class="stats__inner">
-      <div class="stats__item">
-        <div class="stats__chart">
-          <svg viewBox="0 0 200 62" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="grad-views" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#D6E0E2" stop-opacity="0.3"/>
-                <stop offset="100%" stop-color="#D6E0E2" stop-opacity="0"/>
-              </linearGradient>
-            </defs>
-            <path class="chart-area" d="M0,60 C40,59 70,56 100,46 C130,34 162,14 200,0 L200,62 L0,62 Z" fill="url(#grad-views)" opacity="0"/>
-            <path class="chart-line" d="M0,60 C40,59 70,56 100,46 C130,34 162,14 200,0" fill="none"/>
-            <circle class="chart-dot" cx="200" cy="0" r="4" fill="#D6E0E2" opacity="0"/>
-          </svg>
-        </div>
-        <div class="stats__number"><span class="counter" data-target="50" data-suffix="M+">0</span></div>
-        <p class="stats__label">Views Generated</p>
+  <!-- ABOUT ME -->
+  <section class="about" id="about">
+    <div class="about__overlay" aria-hidden="true"></div>
+    <div class="about__inner fade-up">
+      <div class="about__left">
+        <p class="about__eyebrow">About Me</p>
+        <h2 class="about__title">Lucas<br>Coburn</h2>
+        <p class="about__bio">My name is Lucas. For the past two years I've worked as a video editor and creative director based in Melbourne, Australia — with a keen eye for storytelling and visual craft. I've been passionate about all things creative since I was young, and over that time I've helped generate over 50 million views for clients across the world. If you have a vision, let's bring it to life.</p>
       </div>
-      <div class="stats__divider" aria-hidden="true"></div>
-      <div class="stats__item">
-        <div class="stats__chart">
-          <svg viewBox="0 0 200 62" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="grad-projects" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#D6E0E2" stop-opacity="0.3"/>
-                <stop offset="100%" stop-color="#D6E0E2" stop-opacity="0"/>
-              </linearGradient>
-            </defs>
-            <path class="chart-area" d="M0,60 C35,58 65,52 100,40 C135,28 168,16 200,6 L200,62 L0,62 Z" fill="url(#grad-projects)" opacity="0"/>
-            <path class="chart-line" d="M0,60 C35,58 65,52 100,40 C135,28 168,16 200,6" fill="none"/>
-            <circle class="chart-dot" cx="200" cy="6" r="4" fill="#D6E0E2" opacity="0"/>
-          </svg>
+      <div class="about__right">
+        <div class="about__stat" id="stats">
+          <div class="stats__chart">
+            <svg viewBox="0 0 200 62" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="grad-views" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#D6E0E2" stop-opacity="0.3"/>
+                  <stop offset="100%" stop-color="#D6E0E2" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path class="chart-area" d="M0,60 C40,59 70,56 100,46 C130,34 162,14 200,0 L200,62 L0,62 Z" fill="url(#grad-views)" opacity="0"/>
+              <path class="chart-line" d="M0,60 C40,59 70,56 100,46 C130,34 162,14 200,0" fill="none"/>
+              <circle class="chart-dot" cx="200" cy="0" r="4" fill="#D6E0E2" opacity="0"/>
+            </svg>
+          </div>
+          <div class="stats__number"><span class="counter" data-target="50" data-suffix="M+">0</span></div>
+          <p class="stats__label">Views Generated</p>
         </div>
-        <div class="stats__number"><span class="counter" data-target="500" data-suffix="+">0</span></div>
-        <p class="stats__label">Projects Completed</p>
+        <div class="about__divider"></div>
+        <div class="about__stat">
+          <div class="stats__chart">
+            <svg viewBox="0 0 200 62" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="grad-projects" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#D6E0E2" stop-opacity="0.3"/>
+                  <stop offset="100%" stop-color="#D6E0E2" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path class="chart-area" d="M0,60 C35,58 65,52 100,40 C135,28 168,16 200,6 L200,62 L0,62 Z" fill="url(#grad-projects)" opacity="0"/>
+              <path class="chart-line" d="M0,60 C35,58 65,52 100,40 C135,28 168,16 200,6" fill="none"/>
+              <circle class="chart-dot" cx="200" cy="6" r="4" fill="#D6E0E2" opacity="0"/>
+            </svg>
+          </div>
+          <div class="stats__number"><span class="counter" data-target="500" data-suffix="+">0</span></div>
+          <p class="stats__label">Projects Completed</p>
+        </div>
       </div>
-    </div>
-  </section>
-
-  <!-- FEATURED WORKS INTRO -->
-  <section class="featured-intro" id="work">
-    <div class="featured-intro__overlay" aria-hidden="true"></div>
-    <div class="featured-intro__content fade-up">
-      <p class="featured-intro__eyebrow">Selected Work</p>
-      <h2 class="featured-intro__title">Featured<br>Works</h2>
     </div>
   </section>
 
   <!-- CLIENT SECTIONS -->
   <div class="clients-scroller" id="clients-scroller">
+    <div class="carousel-header fade-up">
+      <p class="carousel-eyebrow">Selected Work</p>
+      <h2 class="carousel-title">Featured<br>Works</h2>
+    </div>
     <button class="carousel-btn carousel-btn--prev" id="carousel-prev" aria-label="Previous client">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
