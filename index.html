@@ -50,23 +50,6 @@
   <!-- HERO -->
   <section class="hero" id="hero">
     <div class="hero__overlay" aria-hidden="true"></div>
-    <div class="hero__vids" aria-hidden="true">
-      <div class="hero__vid hero__vid--1">
-        <video src="assets/work/james-1.mp4" autoplay muted loop playsinline></video>
-      </div>
-      <div class="hero__vid hero__vid--2">
-        <video src="assets/work/fin-1.mp4" autoplay muted loop playsinline></video>
-      </div>
-      <div class="hero__vid hero__vid--3">
-        <video src="assets/work/fon-1.mp4" autoplay muted loop playsinline></video>
-      </div>
-      <div class="hero__vid hero__vid--4">
-        <video src="assets/work/bruno-1.mp4" autoplay muted loop playsinline></video>
-      </div>
-      <div class="hero__vid hero__vid--5">
-        <video src="assets/work/james-2.mp4" autoplay muted loop playsinline></video>
-      </div>
-    </div>
     <div class="hero__content">
       <p class="hero__location">Melbourne, Australia</p>
       <div class="hero__mid">
@@ -159,6 +142,13 @@
 
   <!-- CLIENT SECTIONS -->
   <div class="clients-scroller" id="clients-scroller">
+    <button class="carousel-btn carousel-btn--prev" id="carousel-prev" aria-label="Previous client">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <button class="carousel-btn carousel-btn--next" id="carousel-next" aria-label="Next client">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="9 6 15 12 9 18"/></svg>
+    </button>
+    <div class="carousel-counter" id="carousel-counter"><span id="carousel-current">1</span> / <span id="carousel-total">8</span></div>
   <div class="clients-wrapper" id="clients-track">
 
     <!-- JAMES MAGNUSSEN -->

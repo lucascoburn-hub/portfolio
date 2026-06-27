@@ -336,39 +336,6 @@ button { cursor: pointer; border: none; background: none; }
 }
 
 /* ── HERO 3D FLOATING VIDEOS ───────────────────────────────── */
-.hero__vids {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  perspective: 1200px;
-  pointer-events: none;
-}
-
-.hero__vid {
-  position: absolute;
-  width: 180px;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 8px 20px rgba(0,0,0,0.35);
-  will-change: transform;
-}
-
-.hero__vid video {
-  width: 100%;
-  display: block;
-  object-fit: cover;
-}
-
-/* Portrait aspect ratio ~9:16 */
-.hero__vid--1 { top: 8%;  left: 3%;   aspect-ratio: 9/16; transform: rotateY(14deg) rotateX(-4deg); }
-.hero__vid--2 { top: 6%;  right: 4%;  aspect-ratio: 9/16; transform: rotateY(-14deg) rotateX(3deg); }
-.hero__vid--3 { bottom: 10%; left: 4%;  aspect-ratio: 9/16; transform: rotateY(10deg) rotateX(5deg); }
-.hero__vid--4 { bottom: 8%;  right: 3%; aspect-ratio: 9/16; transform: rotateY(-12deg) rotateX(-4deg); }
-.hero__vid--5 { top: 38%; right: 2%;  aspect-ratio: 9/16; width: 160px; transform: rotateY(-16deg) rotateX(2deg); }
-
-@media (max-width: 768px) {
-  .hero__vids { display: none; }
-}
 
 /* ── STATS ─────────────────────────────────────────────────── */
 .stats {
@@ -475,17 +442,52 @@ button { cursor: pointer; border: none; background: none; }
 }
 
 /* ── CLIENTS WRAPPER ───────────────────────────────────────── */
-/* ── HORIZONTAL CLIENT SCROLL ──────────────────────────────── */
-.clients-scroller { position: relative; }
+/* ── CLIENT CAROUSEL ───────────────────────────────────────── */
+.clients-scroller {
+  position: relative;
+  overflow: hidden;
+}
 .clients-wrapper {
-  position: sticky;
-  top: 0;
   display: flex;
   flex-direction: row;
   height: 100vh;
-  overflow: hidden;
   background: var(--midnight);
+  transition: transform 0.7s cubic-bezier(0.77, 0, 0.18, 1);
   will-change: transform;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  border: 1px solid rgba(214, 224, 226, 0.25);
+  background: rgba(22, 42, 44, 0.6);
+  backdrop-filter: blur(8px);
+  color: var(--sky);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, border-color 0.2s;
+}
+.carousel-btn:hover { background: rgba(22, 42, 44, 0.9); border-color: rgba(214,224,226,0.5); }
+.carousel-btn:disabled { opacity: 0.25; cursor: default; }
+.carousel-btn svg { width: 22px; height: 22px; }
+.carousel-btn--prev { left: 20px; }
+.carousel-btn--next { right: 20px; }
+
+.carousel-counter {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  font-family: var(--font-med);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: rgba(214, 224, 226, 0.5);
+  text-transform: uppercase;
 }
 
 /* ── CLIENT SECTION ────────────────────────────────────────── */

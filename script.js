@@ -276,51 +276,39 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// ── HERO VIDEO PARALLAX ────────────────────────────────────────
+// ── CLIENT CAROUSEL ────────────────────────────────────────────
 (function () {
-  const configs = [
-    { sel: '.hero__vid--1', speed: 0.18, base: 'rotateY(14deg) rotateX(-4deg)' },
-    { sel: '.hero__vid--2', speed: 0.28, base: 'rotateY(-14deg) rotateX(3deg)' },
-    { sel: '.hero__vid--3', speed: 0.22, base: 'rotateY(10deg) rotateX(5deg)' },
-    { sel: '.hero__vid--4', speed: 0.32, base: 'rotateY(-12deg) rotateX(-4deg)' },
-    { sel: '.hero__vid--5', speed: 0.15, base: 'rotateY(-16deg) rotateX(2deg)' },
-  ].map(c => ({ ...c, el: document.querySelector(c.sel) })).filter(c => c.el);
+  const track   = document.getElementById('clients-track');
+  const btnPrev = document.getElementById('carousel-prev');
+  const btnNext = document.getElementById('carousel-next');
+  const elCur   = document.getElementById('carousel-current');
+  const elTot   = document.getElementById('carousel-total');
+  if (!track || !btnPrev || !btnNext) return;
 
-  let rafPending = false;
-  function updateParallax() {
-    const y = window.scrollY;
-    configs.forEach(c => {
-      c.el.style.transform = `${c.base} translateY(${-y * c.speed}px)`;
-    });
-    rafPending = false;
+  const panels = Array.from(track.querySelectorAll('.client-section'));
+  const total  = panels.length;
+  let current  = 0;
+
+  elTot.textContent = total;
+
+  function goTo(index) {
+    current = Math.max(0, Math.min(total - 1, index));
+    track.style.transform = `translateX(${-current * 100}vw)`;
+    elCur.textContent = current + 1;
+    btnPrev.disabled = current === 0;
+    btnNext.disabled = current === total - 1;
   }
-  window.addEventListener('scroll', () => {
-    if (!rafPending) { rafPending = true; requestAnimationFrame(updateParallax); }
-  }, { passive: true });
-})();
 
-// ── HORIZONTAL CLIENT SCROLL ───────────────────────────────────
-(function () {
-  const scroller = document.getElementById('clients-scroller');
-  const track    = document.getElementById('clients-track');
-  if (!scroller || !track) return;
+  btnPrev.addEventListener('click', () => goTo(current - 1));
+  btnNext.addEventListener('click', () => goTo(current + 1));
 
-  const panels = track.querySelectorAll('.client-section');
-  scroller.style.height = (panels.length * 100) + 'vh';
+  // Keyboard arrow support
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') goTo(current + 1);
+    if (e.key === 'ArrowLeft')  goTo(current - 1);
+  });
 
-  let rafPending = false;
-  function updateHScroll() {
-    const rect     = scroller.getBoundingClientRect();
-    const progress = -rect.top / (scroller.offsetHeight - window.innerHeight);
-    const maxX     = track.scrollWidth - window.innerWidth;
-    const x        = Math.max(0, Math.min(1, progress)) * maxX;
-    track.style.transform = `translateX(${-x}px)`;
-    rafPending = false;
-  }
-  window.addEventListener('scroll', () => {
-    if (!rafPending) { rafPending = true; requestAnimationFrame(updateHScroll); }
-  }, { passive: true });
-  updateHScroll();
+  goTo(0);
 })();
 
 
