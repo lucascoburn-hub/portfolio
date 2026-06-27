@@ -8,7 +8,7 @@
     setTimeout(() => {
       loader.classList.add('hidden');
       setTimeout(() => loader.remove(), 600);
-    }, 1800);
+    }, 700);
   });
 })();
 
@@ -85,7 +85,7 @@ document.querySelectorAll(
 // ── COUNTER + CHART ANIMATION (single shared rAF loop) ─────────
 function animateStats(section) {
   const duration = 1800;
-  const pause    = 3000;
+  const pause    = 1000;
 
   const counters = Array.from(section.querySelectorAll('.counter')).map(el => ({
     el,
