@@ -1,5 +1,51 @@
 'use strict';
 
+// ── LOADER ─────────────────────────────────────────────────────
+(function () {
+  const loader = document.getElementById('loader');
+  if (!loader) return;
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      loader.classList.add('hidden');
+      setTimeout(() => loader.remove(), 600);
+    }, 1800);
+  });
+})();
+
+// ── CURSOR TRAIL ───────────────────────────────────────────────
+(function () {
+  if (!window.matchMedia('(hover: hover)').matches) return;
+  const COUNT = 12;
+  const dots = Array.from({ length: COUNT }, (_, i) => {
+    const el = document.createElement('div');
+    el.className = 'cursor-trail-dot';
+    el.style.opacity = (1 - i / COUNT) * 0.7;
+    el.style.width = el.style.height = (6 - i * 0.3) + 'px';
+    document.body.appendChild(el);
+    return el;
+  });
+
+  const positions = Array.from({ length: COUNT }, () => ({ x: -100, y: -100 }));
+  let mouse = { x: -100, y: -100 };
+
+  window.addEventListener('mousemove', e => { mouse = { x: e.clientX, y: e.clientY }; });
+
+  function animateTrail() {
+    positions[0].x += (mouse.x - positions[0].x) * 0.35;
+    positions[0].y += (mouse.y - positions[0].y) * 0.35;
+    for (let i = 1; i < COUNT; i++) {
+      positions[i].x += (positions[i-1].x - positions[i].x) * 0.35;
+      positions[i].y += (positions[i-1].y - positions[i].y) * 0.35;
+    }
+    dots.forEach((dot, i) => {
+      dot.style.left = positions[i].x + 'px';
+      dot.style.top  = positions[i].y + 'px';
+    });
+    requestAnimationFrame(animateTrail);
+  }
+  animateTrail();
+})();
+
 // ── NAV SCROLL ─────────────────────────────────────────────────
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {
@@ -230,49 +276,53 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// ── CLIENT SECTION SCROLL FADE IN/OUT ─────────────────────────
+// ── HERO VIDEO PARALLAX ────────────────────────────────────────
 (function () {
-  const sections = Array.from(document.querySelectorAll('.client-section'));
-  if (!sections.length) return;
-
-  // Start invisible
-  sections.forEach(s => { s.style.opacity = '0'; });
+  const configs = [
+    { sel: '.hero__vid--1', speed: 0.18, base: 'rotateY(14deg) rotateX(-4deg)' },
+    { sel: '.hero__vid--2', speed: 0.28, base: 'rotateY(-14deg) rotateX(3deg)' },
+    { sel: '.hero__vid--3', speed: 0.22, base: 'rotateY(10deg) rotateX(5deg)' },
+    { sel: '.hero__vid--4', speed: 0.32, base: 'rotateY(-12deg) rotateX(-4deg)' },
+    { sel: '.hero__vid--5', speed: 0.15, base: 'rotateY(-16deg) rotateX(2deg)' },
+  ].map(c => ({ ...c, el: document.querySelector(c.sel) })).filter(c => c.el);
 
   let rafPending = false;
-
-  function updateFades() {
-    const vh = window.innerHeight;
-    sections.forEach(s => {
-      const rect = s.getBoundingClientRect();
-      const center = rect.top + rect.height / 2;
-
-      let opacity;
-      if (center > vh) {
-        opacity = 0; // below viewport
-      } else if (center > vh * 0.7) {
-        opacity = 1 - (center - vh * 0.7) / (vh - vh * 0.7); // fading in
-      } else if (center > vh * 0.3) {
-        opacity = 1; // fully visible
-      } else if (center > 0) {
-        opacity = center / (vh * 0.3); // fading out
-      } else {
-        opacity = 0; // above viewport
-      }
-
-      s.style.opacity = Math.max(0, Math.min(1, opacity));
+  function updateParallax() {
+    const y = window.scrollY;
+    configs.forEach(c => {
+      c.el.style.transform = `${c.base} translateY(${-y * c.speed}px)`;
     });
     rafPending = false;
   }
-
   window.addEventListener('scroll', () => {
-    if (!rafPending) {
-      rafPending = true;
-      requestAnimationFrame(updateFades);
-    }
+    if (!rafPending) { rafPending = true; requestAnimationFrame(updateParallax); }
   }, { passive: true });
-
-  updateFades(); // run once on load
 })();
+
+// ── HORIZONTAL CLIENT SCROLL ───────────────────────────────────
+(function () {
+  const scroller = document.getElementById('clients-scroller');
+  const track    = document.getElementById('clients-track');
+  if (!scroller || !track) return;
+
+  const panels = track.querySelectorAll('.client-section');
+  scroller.style.height = (panels.length * 100) + 'vh';
+
+  let rafPending = false;
+  function updateHScroll() {
+    const rect     = scroller.getBoundingClientRect();
+    const progress = -rect.top / (scroller.offsetHeight - window.innerHeight);
+    const maxX     = track.scrollWidth - window.innerWidth;
+    const x        = Math.max(0, Math.min(1, progress)) * maxX;
+    track.style.transform = `translateX(${-x}px)`;
+    rafPending = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!rafPending) { rafPending = true; requestAnimationFrame(updateHScroll); }
+  }, { passive: true });
+  updateHScroll();
+})();
+
 
 // ── CURSOR-FOLLOWING BUTTON (Contact section) ─────────────────
 (function () {

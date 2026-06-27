@@ -35,6 +35,38 @@
 
 html { scroll-behavior: smooth; }
 
+/* ── LOADER ────────────────────────────────────────────────── */
+.loader {
+  position: fixed; inset: 0; z-index: 999999;
+  background: var(--midnight);
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.6s ease;
+}
+.loader__text {
+  font-family: var(--font-bold); font-weight: 700;
+  font-size: clamp(2rem, 6vw, 5rem);
+  letter-spacing: -0.06em; text-transform: uppercase;
+  color: var(--cloud);
+  animation: loaderReveal 1s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+@keyframes loaderReveal {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.loader.hidden { opacity: 0; pointer-events: none; }
+
+/* ── CURSOR TRAIL ──────────────────────────────────────────── */
+.cursor-trail-dot {
+  position: fixed;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--sky);
+  pointer-events: none;
+  z-index: 99998;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.4s ease;
+}
+
 /* ── NOISE OVERLAY ────────────────────────────────────────── */
 body::after {
   content: '';
@@ -303,6 +335,41 @@ button { cursor: pointer; border: none; background: none; }
   50%       { opacity: 1;   transform: scaleY(1); }
 }
 
+/* ── HERO 3D FLOATING VIDEOS ───────────────────────────────── */
+.hero__vids {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  perspective: 1200px;
+  pointer-events: none;
+}
+
+.hero__vid {
+  position: absolute;
+  width: 180px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 8px 20px rgba(0,0,0,0.35);
+  will-change: transform;
+}
+
+.hero__vid video {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+/* Portrait aspect ratio ~9:16 */
+.hero__vid--1 { top: 8%;  left: 3%;   aspect-ratio: 9/16; transform: rotateY(14deg) rotateX(-4deg); }
+.hero__vid--2 { top: 6%;  right: 4%;  aspect-ratio: 9/16; transform: rotateY(-14deg) rotateX(3deg); }
+.hero__vid--3 { bottom: 10%; left: 4%;  aspect-ratio: 9/16; transform: rotateY(10deg) rotateX(5deg); }
+.hero__vid--4 { bottom: 8%;  right: 3%; aspect-ratio: 9/16; transform: rotateY(-12deg) rotateX(-4deg); }
+.hero__vid--5 { top: 38%; right: 2%;  aspect-ratio: 9/16; width: 160px; transform: rotateY(-16deg) rotateX(2deg); }
+
+@media (max-width: 768px) {
+  .hero__vids { display: none; }
+}
+
 /* ── STATS ─────────────────────────────────────────────────── */
 .stats {
   position: relative;
@@ -408,15 +475,30 @@ button { cursor: pointer; border: none; background: none; }
 }
 
 /* ── CLIENTS WRAPPER ───────────────────────────────────────── */
-.clients-wrapper { background: var(--midnight); }
+/* ── HORIZONTAL CLIENT SCROLL ──────────────────────────────── */
+.clients-scroller { position: relative; }
+.clients-wrapper {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--midnight);
+  will-change: transform;
+}
 
 /* ── CLIENT SECTION ────────────────────────────────────────── */
 .client-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  min-height: 80vh;
+  min-width: 100vw;
+  width: 100vw;
+  height: 100vh;
+  min-height: unset;
+  flex-shrink: 0;
   overflow: hidden;
-  border-top: 1px solid rgba(244, 239, 230, 0.06);
+  border-left: 1px solid rgba(244, 239, 230, 0.06);
 }
 .client-section--right { direction: ltr; }
 .client-section--left  { direction: rtl; }
@@ -428,7 +510,7 @@ button { cursor: pointer; border: none; background: none; }
   overflow: hidden;
   background: #0d1e20;
   cursor: pointer;
-  height: clamp(420px, 55vw, 680px);
+  height: 100vh;
 }
 .client-section__img-wrap {
   width: 100%; height: 100%;
