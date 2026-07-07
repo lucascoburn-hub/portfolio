@@ -2,23 +2,28 @@
 
 /* ══ AUDIO ENGINE ═══════════════════════════════════════════ */
 const sfx = {
+  subhit:   document.getElementById('sfx-subhit'),
   thunder:  document.getElementById('sfx-thunder'),
   ambience: document.getElementById('sfx-ambience'),
   whoosh:   document.getElementById('sfx-whoosh'),
+  cwhoosh:  document.getElementById('sfx-cwhoosh'),
   click:    document.getElementById('sfx-click'),
 };
 
-sfx.thunder.volume  = 0.16;
+sfx.subhit.volume   = 0.9;   // the entry boom — loud but clean
+sfx.thunder.volume  = 0.04;  // very soft, barely-there storm
 sfx.ambience.volume = 0;
-sfx.whoosh.volume   = 0.35;
+sfx.whoosh.volume   = 0.16;  // scroll transformation whoosh
+sfx.cwhoosh.volume  = 0.12;  // carousel slide swoosh
 sfx.click.volume    = 0.2;
 
 let audioStarted = false;
-let ambienceTarget = 0.3; // set each frame by scroll progress
+let ambienceTarget = 0.1; // set each frame by scroll progress
 
 function startAudio() {
   if (audioStarted) return;
   const tryPlay = Promise.all([
+    sfx.subhit.play(),
     sfx.thunder.play(),
     sfx.ambience.play(),
   ]);
@@ -29,6 +34,7 @@ function startAudio() {
     const unlock = () => {
       if (audioStarted) return;
       audioStarted = true;
+      sfx.subhit.play().catch(() => {});
       sfx.thunder.play().catch(() => {});
       sfx.ambience.play().catch(() => {});
       window.removeEventListener('pointerdown', unlock);
@@ -87,7 +93,7 @@ document.addEventListener('pointerover', e => {
     setTimeout(() => {
       loader.classList.add('hidden');
       startAudio();
-      setTimeout(() => loader.remove(), 1100);
+      setTimeout(() => loader.remove(), 2500);
     }, 350);
   }
 
@@ -182,35 +188,34 @@ function updateStory() {
   storyHero.style.opacity = heroFade;
   storyHero.style.visibility = heroFade < 0.01 ? 'hidden' : 'visible';
 
-  // Image grows (phase A), then slides right + settles (phase B)
-  const grow  = phase(p, 0.08, 0.5);
-  const shift = phase(p, 0.55, 0.8);
-  const scale = 1 + grow * 0.55 - shift * 0.62;
-  const xShift = shift * 21; // vw to the right
+  // Image grows until it fills the whole screen
+  const grow  = phase(p, 0.08, 0.62);
+  const scale = 1 + grow * 0.85; // 62vw×56vh → full viewport coverage
+  const yDrift = grow * -4;      // settle to true center as it fills
   storyImg.style.transform =
-    `translate(calc(-50% + ${xShift}vw), -50%) scale(${scale})`;
+    `translate(-50%, calc(-50% + ${yDrift}vh)) scale(${scale})`;
 
   // Crossfade mountain → running
-  runningImg.style.opacity = phase(p, 0.48, 0.62);
+  runningImg.style.opacity = phase(p, 0.5, 0.66);
 
-  // About text fades in
-  const aboutIn = phase(p, 0.6, 0.78);
+  // About text fades in over the fullscreen photo
+  const aboutIn = phase(p, 0.64, 0.82);
   storyAbout.style.opacity = aboutIn;
   storyAbout.style.pointerEvents = aboutIn > 0.5 ? 'auto' : 'none';
 
-  // Whoosh when the transformation kicks off
-  if (p > 0.35 && !whooshPlayed) { whooshPlayed = true; playWhoosh(); }
-  if (p < 0.12 && whooshPlayed) whooshPlayed = false;
+  // Whoosh rides along with the image movement
+  if (p > 0.1 && !whooshPlayed) { whooshPlayed = true; playWhoosh(); }
+  if (p < 0.04 && whooshPlayed) whooshPlayed = false;
 
   // Stats animate once about is visible
-  if (p > 0.66 && !statsPlayed) {
+  if (p > 0.7 && !statsPlayed) {
     statsPlayed = true;
     const stats = document.getElementById('stats');
     if (stats) animateStats(stats);
   }
 
   // Nature ambience fades away as you leave the mountain
-  ambienceTarget = 0.3 * (1 - phase(p, 0.3, 0.7));
+  ambienceTarget = 0.1 * (1 - phase(p, 0.3, 0.7));
 }
 
 window.addEventListener('scroll', () => {
@@ -306,13 +311,17 @@ function animateStats(section) {
 
   elTot.textContent = total;
 
-  function goTo(index) {
+  function goTo(index, silent) {
+    const prev = current;
     current = Math.max(0, Math.min(total - 1, index));
-    const w = panels[0].getBoundingClientRect().width;
-    track.style.transform = `translateX(${-current * w}px)`;
+    track.style.transform = `translateX(${-current * track.clientWidth}px)`;
     elCur.textContent = current + 1;
     btnPrev.disabled = current === 0;
     btnNext.disabled = current === total - 1;
+    if (!silent && current !== prev && audioStarted) {
+      sfx.cwhoosh.currentTime = 0;
+      sfx.cwhoosh.play().catch(() => {});
+    }
   }
 
   btnPrev.addEventListener('click', () => goTo(current - 1));
@@ -323,9 +332,9 @@ function animateStats(section) {
     if (e.key === 'ArrowLeft')  goTo(current - 1);
   });
 
-  window.addEventListener('resize', () => goTo(current));
+  window.addEventListener('resize', () => goTo(current, true));
 
-  goTo(0);
+  goTo(0, true);
 })();
 
 /* ══ VIDEO MODAL + LIGHTBOX ═════════════════════════════════ */
