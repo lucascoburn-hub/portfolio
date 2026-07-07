@@ -233,8 +233,8 @@ body {
   z-index: 1;
   left: 50%;
   top: 54%;
-  width: 62vw;
-  height: 56vh;
+  width: min(62vw, 99.5vh); /* 16:9 box that never exceeds the viewport */
+  aspect-ratio: 16 / 9;
   transform: translate(-50%, -50%);
   overflow: hidden;
   will-change: transform;
@@ -296,6 +296,31 @@ body {
   font-style: italic;
   color: var(--sky);
 }
+.story__about-socials {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+}
+.about-social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(254, 252, 246, 0.35);
+  border-radius: 2px;
+  color: var(--cloud);
+  background: rgba(22, 42, 44, 0.25);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: background 0.25s, border-color 0.25s;
+}
+.about-social-btn:hover {
+  background: rgba(254, 252, 246, 0.15);
+  border-color: rgba(254, 252, 246, 0.7);
+}
+.about-social-btn svg { width: 18px; height: 18px; }
+
 /* Light stats over the photo */
 .story__about .chart-line { stroke: var(--cloud); }
 .story__about .chart-dot  { fill: var(--cloud); }
@@ -632,12 +657,21 @@ body {
 }
 .resources__grid {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 28px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 12px;
+  -webkit-overflow-scrolling: touch;
 }
+.resources__grid::-webkit-scrollbar { height: 4px; }
+.resources__grid::-webkit-scrollbar-track { background: transparent; }
+.resources__grid::-webkit-scrollbar-thumb { background: rgba(22, 42, 44, 0.15); border-radius: 2px; }
 .resource-card {
+  flex: 0 0 min(540px, 44vw);
+  scroll-snap-align: start;
   display: grid;
-  grid-template-columns: 160px 1fr;
+  grid-template-columns: 150px 1fr;
   background: var(--cloud);
   border: 1px solid rgba(22, 42, 44, 0.08);
   border-radius: 10px;
@@ -970,7 +1004,7 @@ body {
   .story__roles { left: 24px; bottom: 40px; gap: 8px; }
   .story__role-label { font-size: 0.9rem; }
   .story__tagline { right: 24px; bottom: 40px; font-size: 0.9rem; }
-  .story__img-wrap { width: 80vw; height: 44vh; }
+  .story__img-wrap { width: 88vw; }
   .story__about { padding: 90px 24px 32px; }
   .story__stats { gap: 24px; }
   .stats__number { font-size: 2.4rem; }
@@ -992,7 +1026,7 @@ body {
   .carousel-btn--next { right: 24px; }
 
   .resources { padding: 90px 24px 100px; }
-  .resource-card { grid-template-columns: 1fr; }
+  .resource-card { grid-template-columns: 1fr; flex: 0 0 82vw; }
   .resource-card__thumb { flex-direction: row; padding: 18px; gap: 14px; }
 
   .contact { padding: 140px 24px 160px; background-attachment: scroll; cursor: auto; }

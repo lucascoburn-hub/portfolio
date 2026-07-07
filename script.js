@@ -3,19 +3,19 @@
 /* ══ AUDIO ENGINE ═══════════════════════════════════════════ */
 const sfx = {
   subhit:   document.getElementById('sfx-subhit'),
-  thunder:  document.getElementById('sfx-thunder'),
   ambience: document.getElementById('sfx-ambience'),
   whoosh:   document.getElementById('sfx-whoosh'),
   cwhoosh:  document.getElementById('sfx-cwhoosh'),
   click:    document.getElementById('sfx-click'),
+  click2:   document.getElementById('sfx-click2'),
 };
 
 sfx.subhit.volume   = 0.9;   // the entry boom — loud but clean
-sfx.thunder.volume  = 0.04;  // very soft, barely-there storm
 sfx.ambience.volume = 0;
 sfx.whoosh.volume   = 0.16;  // scroll transformation whoosh
 sfx.cwhoosh.volume  = 0.12;  // carousel slide swoosh
-sfx.click.volume    = 0.2;
+sfx.click.volume    = 0.2;   // hover blip
+sfx.click2.volume   = 0.1;   // pop-up open click
 
 let audioStarted = false;
 let ambienceTarget = 0.1; // set each frame by scroll progress
@@ -24,7 +24,6 @@ function startAudio() {
   if (audioStarted) return;
   const tryPlay = Promise.all([
     sfx.subhit.play(),
-    sfx.thunder.play(),
     sfx.ambience.play(),
   ]);
   tryPlay.then(() => {
@@ -35,7 +34,6 @@ function startAudio() {
       if (audioStarted) return;
       audioStarted = true;
       sfx.subhit.play().catch(() => {});
-      sfx.thunder.play().catch(() => {});
       sfx.ambience.play().catch(() => {});
       window.removeEventListener('pointerdown', unlock);
       window.removeEventListener('keydown', unlock);
@@ -68,10 +66,18 @@ function playClick() {
   sfx.click.play().catch(() => {});
 }
 
-// Hover click sound on interactive elements (delegated)
+function playPopClick() {
+  if (!audioStarted) return;
+  sfx.click2.currentTime = 0;
+  sfx.click2.play().catch(() => {});
+}
+
+// Hover click sound on interactive elements (delegated).
+// No sound on the contact circle button or the carousel arrows.
 document.addEventListener('pointerover', e => {
   const t = e.target.closest('a, button, .modal-video-item, .resource-card');
-  if (t && !(e.relatedTarget && t.contains(e.relatedTarget))) playClick();
+  if (!t || t.closest('.cursor-btn') || t.closest('.carousel-btn')) return;
+  if (!(e.relatedTarget && t.contains(e.relatedTarget))) playClick();
 });
 
 /* ══ LOADER ═════════════════════════════════════════════════ */
@@ -188,10 +194,14 @@ function updateStory() {
   storyHero.style.opacity = heroFade;
   storyHero.style.visibility = heroFade < 0.01 ? 'hidden' : 'visible';
 
-  // Image grows until it fills the whole screen
-  const grow  = phase(p, 0.08, 0.62);
-  const scale = 1 + grow * 0.85; // 62vw×56vh → full viewport coverage
-  const yDrift = grow * -4;      // settle to true center as it fills
+  // Image grows until it fully covers the screen (16:9 box, cover scale)
+  const grow = phase(p, 0.08, 0.62);
+  const coverScale = Math.max(
+    window.innerWidth  / storyImg.offsetWidth,
+    window.innerHeight / storyImg.offsetHeight
+  );
+  const scale = 1 + grow * (coverScale - 1);
+  const yDrift = grow * -4; // settle to true center as it fills
   storyImg.style.transform =
     `translate(-50%, calc(-50% + ${yDrift}vh)) scale(${scale})`;
 
@@ -375,6 +385,7 @@ const lightboxClose   = document.getElementById('vid-lightbox-close');
 const lightboxVideo   = document.getElementById('vid-lightbox-video');
 
 function openLightbox(src) {
+  playPopClick();
   lightboxVideo.src = src;
   lightbox.classList.add('open');
   lightboxVideo.play().catch(() => {});
@@ -423,6 +434,7 @@ function openModal(clientKey) {
   });
 
   modalClientName.textContent = clientLabels[clientKey] || '';
+  playPopClick();
   backdrop.classList.add('open');
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';
