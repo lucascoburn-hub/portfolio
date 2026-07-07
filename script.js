@@ -1,25 +1,111 @@
 'use strict';
 
-// ── LOADER ─────────────────────────────────────────────────────
+/* ══ AUDIO ENGINE ═══════════════════════════════════════════ */
+const sfx = {
+  thunder:  document.getElementById('sfx-thunder'),
+  ambience: document.getElementById('sfx-ambience'),
+  whoosh:   document.getElementById('sfx-whoosh'),
+  click:    document.getElementById('sfx-click'),
+};
+
+sfx.thunder.volume  = 0.16;
+sfx.ambience.volume = 0;
+sfx.whoosh.volume   = 0.35;
+sfx.click.volume    = 0.2;
+
+let audioStarted = false;
+let ambienceTarget = 0.3; // set each frame by scroll progress
+
+function startAudio() {
+  if (audioStarted) return;
+  const tryPlay = Promise.all([
+    sfx.thunder.play(),
+    sfx.ambience.play(),
+  ]);
+  tryPlay.then(() => {
+    audioStarted = true;
+  }).catch(() => {
+    // Autoplay blocked — wait for first real interaction
+    const unlock = () => {
+      if (audioStarted) return;
+      audioStarted = true;
+      sfx.thunder.play().catch(() => {});
+      sfx.ambience.play().catch(() => {});
+      window.removeEventListener('pointerdown', unlock);
+      window.removeEventListener('keydown', unlock);
+      window.removeEventListener('touchstart', unlock);
+      window.removeEventListener('wheel', unlock);
+    };
+    window.addEventListener('pointerdown', unlock);
+    window.addEventListener('keydown', unlock);
+    window.addEventListener('touchstart', unlock, { passive: true });
+    window.addEventListener('wheel', unlock, { passive: true });
+  });
+}
+
+// Smooth ambience volume toward target
+setInterval(() => {
+  if (!audioStarted) return;
+  const v = sfx.ambience.volume;
+  sfx.ambience.volume = Math.max(0, Math.min(1, v + (ambienceTarget - v) * 0.08));
+}, 80);
+
+function playWhoosh() {
+  if (!audioStarted) return;
+  sfx.whoosh.currentTime = 0;
+  sfx.whoosh.play().catch(() => {});
+}
+
+function playClick() {
+  if (!audioStarted) return;
+  sfx.click.currentTime = 0;
+  sfx.click.play().catch(() => {});
+}
+
+// Hover click sound on interactive elements (delegated)
+document.addEventListener('pointerover', e => {
+  const t = e.target.closest('a, button, .modal-video-item, .resource-card');
+  if (t && !(e.relatedTarget && t.contains(e.relatedTarget))) playClick();
+});
+
+/* ══ LOADER ═════════════════════════════════════════════════ */
 (function () {
   const loader = document.getElementById('loader');
-  if (!loader) return;
-  window.addEventListener('load', () => {
+  const bar    = document.getElementById('loader-bar');
+  if (!loader || !bar) return;
+
+  // Creep the bar forward while assets load
+  let fake = 0;
+  const creep = setInterval(() => {
+    fake = Math.min(fake + 12 + Math.random() * 10, 82);
+    bar.style.width = fake + '%';
+  }, 140);
+
+  function finish() {
+    clearInterval(creep);
+    bar.style.width = '100%';
     setTimeout(() => {
       loader.classList.add('hidden');
-      setTimeout(() => loader.remove(), 600);
-    }, 700);
-  });
+      startAudio();
+      setTimeout(() => loader.remove(), 1100);
+    }, 350);
+  }
+
+  if (document.readyState === 'complete') finish();
+  else window.addEventListener('load', finish);
+
+  // Safety: never hang more than 4s
+  setTimeout(finish, 4000);
 })();
 
-// ── CURSOR TRAIL ───────────────────────────────────────────────
+/* ══ CURSOR TRAIL ═══════════════════════════════════════════ */
 (function () {
   if (!window.matchMedia('(hover: hover)').matches) return;
   const COUNT = 12;
   const dots = Array.from({ length: COUNT }, (_, i) => {
     const el = document.createElement('div');
     el.className = 'cursor-trail-dot';
-    el.style.opacity = (1 - i / COUNT) * 0.7;
+    el.style.opacity = (1 - i / COUNT) * 0.45;
     el.style.width = el.style.height = (6 - i * 0.3) + 'px';
     document.body.appendChild(el);
     return el;
@@ -34,8 +120,8 @@
     positions[0].x += (mouse.x - positions[0].x) * 0.35;
     positions[0].y += (mouse.y - positions[0].y) * 0.35;
     for (let i = 1; i < COUNT; i++) {
-      positions[i].x += (positions[i-1].x - positions[i].x) * 0.35;
-      positions[i].y += (positions[i-1].y - positions[i].y) * 0.35;
+      positions[i].x += (positions[i - 1].x - positions[i].x) * 0.35;
+      positions[i].y += (positions[i - 1].y - positions[i].y) * 0.35;
     }
     dots.forEach((dot, i) => {
       dot.style.left = positions[i].x + 'px';
@@ -46,13 +132,12 @@
   animateTrail();
 })();
 
-// ── NAV SCROLL ─────────────────────────────────────────────────
+/* ══ NAV ════════════════════════════════════════════════════ */
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {
   nav.classList.toggle('scrolled', window.scrollY > 60);
 }, { passive: true });
 
-// ── MOBILE MENU ────────────────────────────────────────────────
 const hamburger = document.getElementById('hamburger');
 const navLinks  = document.getElementById('nav-links');
 
@@ -68,7 +153,73 @@ navLinks.querySelectorAll('a').forEach(a => {
   });
 });
 
-// ── SCROLL REVEAL ──────────────────────────────────────────────
+/* ══ SCROLL STORY (hero → about) ════════════════════════════ */
+const story      = document.getElementById('story');
+const storyHero  = document.getElementById('story-hero');
+const storyImg   = document.getElementById('story-img');
+const runningImg = document.getElementById('story-img-running');
+const storyAbout = document.getElementById('story-about');
+
+let whooshPlayed = false;
+let statsPlayed  = false;
+
+function clamp01(v) { return Math.max(0, Math.min(1, v)); }
+function phase(p, a, b) {
+  const t = clamp01((p - a) / (b - a));
+  return t * t * (3 - 2 * t); // smoothstep
+}
+
+let storyRaf = false;
+function updateStory() {
+  storyRaf = false;
+  if (!story) return;
+  const vh = window.innerHeight;
+  const total = story.offsetHeight - vh;
+  const p = clamp01((-story.getBoundingClientRect().top) / total);
+
+  // Hero text fades out early
+  const heroFade = 1 - phase(p, 0.02, 0.22);
+  storyHero.style.opacity = heroFade;
+  storyHero.style.visibility = heroFade < 0.01 ? 'hidden' : 'visible';
+
+  // Image grows (phase A), then slides right + settles (phase B)
+  const grow  = phase(p, 0.08, 0.5);
+  const shift = phase(p, 0.55, 0.8);
+  const scale = 1 + grow * 0.55 - shift * 0.62;
+  const xShift = shift * 21; // vw to the right
+  storyImg.style.transform =
+    `translate(calc(-50% + ${xShift}vw), -50%) scale(${scale})`;
+
+  // Crossfade mountain → running
+  runningImg.style.opacity = phase(p, 0.48, 0.62);
+
+  // About text fades in
+  const aboutIn = phase(p, 0.6, 0.78);
+  storyAbout.style.opacity = aboutIn;
+  storyAbout.style.pointerEvents = aboutIn > 0.5 ? 'auto' : 'none';
+
+  // Whoosh when the transformation kicks off
+  if (p > 0.35 && !whooshPlayed) { whooshPlayed = true; playWhoosh(); }
+  if (p < 0.12 && whooshPlayed) whooshPlayed = false;
+
+  // Stats animate once about is visible
+  if (p > 0.66 && !statsPlayed) {
+    statsPlayed = true;
+    const stats = document.getElementById('stats');
+    if (stats) animateStats(stats);
+  }
+
+  // Nature ambience fades away as you leave the mountain
+  ambienceTarget = 0.3 * (1 - phase(p, 0.3, 0.7));
+}
+
+window.addEventListener('scroll', () => {
+  if (!storyRaf) { storyRaf = true; requestAnimationFrame(updateStory); }
+}, { passive: true });
+window.addEventListener('resize', updateStory);
+updateStory();
+
+/* ══ SCROLL REVEAL ══════════════════════════════════════════ */
 const revealObserver = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) {
@@ -78,11 +229,9 @@ const revealObserver = new IntersectionObserver(entries => {
   });
 }, { threshold: 0.12 });
 
-document.querySelectorAll(
-  '.fade-up, .client-section__media, .client-section__content'
-).forEach(el => revealObserver.observe(el));
+document.querySelectorAll('.fade-up').forEach(el => revealObserver.observe(el));
 
-// ── COUNTER + CHART ANIMATION (single shared rAF loop) ─────────
+/* ══ COUNTER + CHART ANIMATION ══════════════════════════════ */
 function animateStats(section) {
   const duration = 1800;
   const pause    = 1000;
@@ -142,18 +291,44 @@ function animateStats(section) {
   runCycle();
 }
 
-const statsObserver = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (!e.isIntersecting) return;
-    animateStats(e.target);
-    statsObserver.unobserve(e.target);
+/* ══ CLIENT CAROUSEL ════════════════════════════════════════ */
+(function () {
+  const track   = document.getElementById('clients-track');
+  const btnPrev = document.getElementById('carousel-prev');
+  const btnNext = document.getElementById('carousel-next');
+  const elCur   = document.getElementById('carousel-current');
+  const elTot   = document.getElementById('carousel-total');
+  if (!track || !btnPrev || !btnNext) return;
+
+  const panels = Array.from(track.querySelectorAll('.client-section'));
+  const total  = panels.length;
+  let current  = 0;
+
+  elTot.textContent = total;
+
+  function goTo(index) {
+    current = Math.max(0, Math.min(total - 1, index));
+    const w = panels[0].getBoundingClientRect().width;
+    track.style.transform = `translateX(${-current * w}px)`;
+    elCur.textContent = current + 1;
+    btnPrev.disabled = current === 0;
+    btnNext.disabled = current === total - 1;
+  }
+
+  btnPrev.addEventListener('click', () => goTo(current - 1));
+  btnNext.addEventListener('click', () => goTo(current + 1));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') goTo(current + 1);
+    if (e.key === 'ArrowLeft')  goTo(current - 1);
   });
-}, { threshold: 0.2 });
 
-const statsSection = document.getElementById('stats');
-if (statsSection) statsObserver.observe(statsSection);
+  window.addEventListener('resize', () => goTo(current));
 
-// ── VIDEO MODAL + LIGHTBOX ─────────────────────────────────────
+  goTo(0);
+})();
+
+/* ══ VIDEO MODAL + LIGHTBOX ═════════════════════════════════ */
 const clientVideos = {
   james: [
     'assets/work/james-1.mp4',
@@ -190,7 +365,6 @@ const lightbox        = document.getElementById('vid-lightbox');
 const lightboxClose   = document.getElementById('vid-lightbox-close');
 const lightboxVideo   = document.getElementById('vid-lightbox-video');
 
-// ── Lightbox ───────────────────────────────────────────────────
 function openLightbox(src) {
   lightboxVideo.src = src;
   lightbox.classList.add('open');
@@ -212,7 +386,6 @@ lightbox.addEventListener('click', e => {
   if (e.target === lightbox) closeLightbox();
 });
 
-// ── Modal ──────────────────────────────────────────────────────
 function openModal(clientKey) {
   const videos = clientVideos[clientKey];
   if (!videos) return;
@@ -222,7 +395,6 @@ function openModal(clientKey) {
     const item = document.createElement('div');
     item.className = 'modal-video-item';
 
-    // Static thumbnail — shows first frame, no controls, not playing
     const thumb = document.createElement('video');
     thumb.src         = src;
     thumb.controls    = false;
@@ -230,12 +402,10 @@ function openModal(clientKey) {
     thumb.preload     = 'metadata';
     thumb.muted       = true;
 
-    // Play icon overlay
     const playIcon = document.createElement('div');
     playIcon.className = 'modal-play-icon';
     playIcon.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>`;
 
-    // Click thumbnail → expand into lightbox and play
     item.addEventListener('click', () => openLightbox(src));
 
     item.appendChild(thumb);
@@ -276,43 +446,7 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// ── CLIENT CAROUSEL ────────────────────────────────────────────
-(function () {
-  const track   = document.getElementById('clients-track');
-  const btnPrev = document.getElementById('carousel-prev');
-  const btnNext = document.getElementById('carousel-next');
-  const elCur   = document.getElementById('carousel-current');
-  const elTot   = document.getElementById('carousel-total');
-  if (!track || !btnPrev || !btnNext) return;
-
-  const panels = Array.from(track.querySelectorAll('.client-section'));
-  const total  = panels.length;
-  let current  = 0;
-
-  elTot.textContent = total;
-
-  function goTo(index) {
-    current = Math.max(0, Math.min(total - 1, index));
-    track.style.transform = `translateX(${-current * 100}vw)`;
-    elCur.textContent = current + 1;
-    btnPrev.disabled = current === 0;
-    btnNext.disabled = current === total - 1;
-  }
-
-  btnPrev.addEventListener('click', () => goTo(current - 1));
-  btnNext.addEventListener('click', () => goTo(current + 1));
-
-  // Keyboard arrow support
-  document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight') goTo(current + 1);
-    if (e.key === 'ArrowLeft')  goTo(current - 1);
-  });
-
-  goTo(0);
-})();
-
-
-// ── CURSOR-FOLLOWING BUTTON (Contact section) ─────────────────
+/* ══ CURSOR-FOLLOWING BUTTON (Contact) ══════════════════════ */
 (function () {
   const contact = document.getElementById('contact');
   const btn     = document.getElementById('cursor-btn');
