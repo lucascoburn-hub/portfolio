@@ -73,10 +73,11 @@ function playPopClick() {
 }
 
 // Hover click sound on interactive elements (delegated).
-// No sound on the contact circle button or the carousel arrows.
+// No sound on: contact circle button, carousel arrows, video thumbnails,
+// or View Work (it gets a single click sound on open instead).
 document.addEventListener('pointerover', e => {
-  const t = e.target.closest('a, button, .modal-video-item, .resource-card');
-  if (!t || t.closest('.cursor-btn') || t.closest('.carousel-btn')) return;
+  const t = e.target.closest('a, button, .resource-card');
+  if (!t || t.closest('.cursor-btn') || t.closest('.carousel-btn') || t.closest('.view-work-btn')) return;
   if (!(e.relatedTarget && t.contains(e.relatedTarget))) playClick();
 });
 
@@ -358,6 +359,21 @@ function animateStats(section) {
   });
 
   window.addEventListener('resize', () => goTo(current, true));
+
+  // Touch swipe on mobile
+  const viewport = document.querySelector('.carousel-viewport');
+  if (viewport) {
+    let touchX = null;
+    viewport.addEventListener('touchstart', e => {
+      touchX = e.touches[0].clientX;
+    }, { passive: true });
+    viewport.addEventListener('touchend', e => {
+      if (touchX === null) return;
+      const dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 50) goTo(dx < 0 ? current + 1 : current - 1);
+      touchX = null;
+    }, { passive: true });
+  }
 
   goTo(0, true);
 })();

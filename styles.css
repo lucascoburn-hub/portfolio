@@ -991,36 +991,81 @@ body {
 
   .story { height: 320vh; }
   .nav__meta--center { display: none; }
-  .story__name { font-size: clamp(2.6rem, 12vw, 4rem); top: 15vh; }
-  .story__roles { left: 24px; bottom: 40px; gap: 8px; }
-  .story__role-label { font-size: 0.9rem; }
-  .story__tagline { right: 24px; bottom: 40px; font-size: 0.9rem; }
-  .story__img-wrap { width: 88vw; }
-  .story__about { padding: 90px 24px 32px; }
-  .story__stats { gap: 24px; }
-  .stats__number { font-size: 2.4rem; }
+  .nav__meta { font-size: 0.8rem; }
+  .story__name { font-size: clamp(2.6rem, 12vw, 4rem); top: 13vh; }
+  .story__roles { left: 24px; bottom: 36px; gap: 8px; }
+  .story__role-label { font-size: 0.85rem; }
+  .story__role-num { font-size: 0.7rem; }
+  .story__tagline { right: 24px; bottom: 36px; font-size: 0.85rem; }
+  .story__img-wrap { width: 92vw; }
+  .story__about { padding: 84px 24px 28px; }
+  .story__about-inner { max-width: 100%; gap: 14px; }
+  .story__about-title { font-size: 2.4rem; }
+  .story__about-bio { font-size: 0.92rem; }
+  /* Stack the stats vertically on phones */
+  .story__stats {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 22px;
+    max-width: 100%;
+  }
+  .story__stat { align-items: flex-start; gap: 6px; }
+  .story__stat-divider { display: none; }
+  .stats__chart { max-width: 160px; height: 40px; }
+  .stats__number { font-size: 2.2rem; }
+  .stats__label { font-size: 0.82rem; }
 
   .clients-scroller { padding: 0 16px 48px; }
   .carousel-header { padding: 80px 8px 36px; }
   .client-section {
     grid-template-columns: 1fr;
-    min-width: calc(100vw - 32px);
-    width: calc(100vw - 32px);
-    height: 78vh;
-    grid-template-rows: 40% 60%;
+    grid-template-rows: 38% 62%;
+    height: 80vh;
   }
-  .client-section__media { height: 100%; }
-  .client-section__content { padding: 28px 24px; overflow-y: auto; }
-  .client-section__desc { font-size: 0.88rem; margin-bottom: 18px; }
-  .client-section__metric { margin-bottom: 20px; }
-  .carousel-btn--prev { left: 24px; }
-  .carousel-btn--next { right: 24px; }
+  /* Photo on top, text below on phones */
+  .client-section__media   { order: 1; height: 100%; }
+  .client-section__content { order: 2; padding: 24px 22px; overflow-y: auto; }
+  .client-section__name { font-size: 1.5rem; }
+  .client-section__desc { font-size: 0.88rem; margin-bottom: 16px; }
+  .client-section__metric { margin-bottom: 18px; }
+  .metric__from, .metric__to { font-size: 1.3rem; }
+  .view-work-btn { padding: 12px 24px; }
+  .carousel-btn { width: 44px; height: 44px; }
+  .carousel-btn--prev { left: 22px; }
+  .carousel-btn--next { right: 22px; }
 
   .resources { padding: 90px 24px 100px; }
   .resource-card { grid-template-columns: 1fr; flex: 0 0 82vw; }
   .resource-card__thumb { flex-direction: row; padding: 18px; gap: 14px; }
+  .resource-card__body { padding: 22px 24px; }
 
-  .contact { padding: 140px 24px 160px; background-attachment: scroll; cursor: auto; }
-  .cursor-btn { display: none; }
+  /* Contact: static booking button (no cursor-follow on touch) */
+  .contact {
+    padding: 120px 24px 120px;
+    background-attachment: scroll;
+    cursor: auto;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 8px;
+  }
+  .cursor-btn {
+    display: flex;
+    position: relative;
+    top: auto; left: auto;
+    transform: none;
+    pointer-events: auto;
+    cursor: pointer;
+    width: 120px; height: 120px;
+    z-index: 2;
+    margin-top: 24px;
+  }
+  .cursor-btn.is-visible { transform: none; }
   .footer { padding: 22px 24px; font-size: 0.7rem; }
+
+  /* Video modal: vertical stack of thumbnails */
+  .video-modal { padding: 24px 16px; }
+  .modal-video-item { width: min(220px, 56vw); height: calc(min(220px, 56vw) * 16 / 9); }
+  .vid-lightbox__video { width: 94vw; max-height: 82vh; }
+  .vid-lightbox__close { top: 16px; right: 16px; }
 }
