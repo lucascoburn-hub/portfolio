@@ -778,6 +778,10 @@ body {
 .cursor-btn {
   position: absolute;
   z-index: 10;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: none;
   width: 140px;
   height: 140px;
   border-radius: 50%;

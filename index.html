@@ -349,10 +349,13 @@
       <h2 class="contact__headline">Connect<br>with Me</h2>
       <p class="contact__sub">Got a question or project in mind? Lets chat.</p>
     </div>
-    <!-- Cursor-following Instagram button -->
-    <a class="cursor-btn" id="cursor-btn" href="https://www.instagram.com/lucas.coburn/" target="_blank" rel="noopener" aria-label="Lucas Coburn on Instagram">
+    <!-- Cursor-following booking button (opens Cal.com popup) -->
+    <button class="cursor-btn" id="cursor-btn" type="button" aria-label="Book a call with Lucas Coburn"
+      data-cal-link="lucas-coburn-bqduxi/30min"
+      data-cal-namespace="30min"
+      data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'>
       <span class="cursor-btn__text">Connect ↗</span>
-    </a>
+    </button>
   </section>
 
   <!-- FOOTER -->
@@ -384,6 +387,17 @@
   <audio id="sfx-ambience" src="assets/audio/ambience.mp3" preload="auto" loop></audio>
   <audio id="sfx-whoosh" src="assets/audio/whoosh.mp3" preload="auto"></audio>
   <audio id="sfx-click" src="assets/audio/click.mp3" preload="auto"></audio>
+
+  <!-- Cal element-click embed code begins -->
+  <script type="text/javascript">
+    (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+  Cal("init", "30min", {origin:"https://app.cal.com"});
+  Cal.config = Cal.config || {};
+  Cal.config.forwardQueryParams = true;
+
+  Cal.ns["30min"]("ui", {"cssVarsPerTheme":{"light":{"cal-brand":"#f4efe6"},"dark":{"cal-brand":"#162a2c"}},"hideEventTypeDetails":false,"layout":"month_view"});
+  </script>
+  <!-- Cal element-click embed code ends -->
 
   <script src="script.js"></script>
 </body>
