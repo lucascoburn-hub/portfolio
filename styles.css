@@ -214,12 +214,18 @@ body {
   color: var(--forest);
 }
 
-/* Play-intro button — bottom centre of the hero */
-.story__play-btn {
+/* Hero CTAs — play intro + connect, bottom centre */
+.story__ctas {
   position: absolute;
   left: 50%;
   bottom: 44px;
   transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  pointer-events: auto;
+}
+.story__play-btn {
   width: 56px;
   height: 56px;
   border-radius: 50%;
@@ -232,8 +238,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: auto;
-  transition: background 0.25s, border-color 0.25s, transform 0.25s;
+  transition: background 0.25s, border-color 0.25s;
   animation: playBtnNudge 2.4s ease-in-out infinite;
 }
 .story__play-btn:hover {
@@ -242,8 +247,27 @@ body {
 }
 .story__play-btn svg { width: 22px; height: 22px; }
 @keyframes playBtnNudge {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50%      { transform: translateX(-50%) translateY(6px); }
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(6px); }
+}
+.story__connect-btn {
+  height: 56px;
+  padding: 0 26px;
+  border-radius: 100px;
+  border: none;
+  background: var(--sky);
+  color: var(--midnight);
+  font-family: var(--font-bold);
+  font-weight: 700;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.25s, background 0.25s;
+}
+.story__connect-btn:hover {
+  background: #c6d4d7;
+  transform: translateY(-2px);
 }
 
 /* Fullscreen photo masked down to a centered 16:9 frame.
@@ -319,6 +343,38 @@ body {
   font-style: italic;
   color: var(--sky);
 }
+/* Entrance choreography — letters sweep in from the left, then the
+   paragraphs and socials follow. Driven by .chars-in from the scroll. */
+.story__about-title .char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateX(-28px);
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.story__about.chars-in .story__about-title .char {
+  opacity: 1;
+  transform: translateX(0);
+}
+.story__about-eyebrow,
+.story__about-bio,
+.story__about-socials {
+  opacity: 0;
+  transform: translateX(-32px);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.story__about-eyebrow { transition-delay: 0.05s; }
+.story__about-bio { transition-delay: 0.55s; }
+.story__about-bio--em { transition-delay: 0.7s; }
+.story__about-socials { transition-delay: 0.85s; }
+.story__about.chars-in .story__about-eyebrow,
+.story__about.chars-in .story__about-bio,
+.story__about.chars-in .story__about-socials {
+  opacity: 1;
+  transform: translateX(0);
+}
+
 .story__about-socials {
   display: flex;
   gap: 12px;
@@ -1033,6 +1089,7 @@ body {
   .story__role-label { font-size: 0.85rem; }
   .story__role-num { font-size: 0.7rem; }
   .story__tagline { right: 24px; bottom: 36px; font-size: 0.85rem; }
+  .story__ctas { bottom: 128px; }
   .story__about { padding: 84px 24px 28px; }
   .story__about-inner { max-width: 100%; gap: 14px; }
   .story__about-title { font-size: 2.4rem; }

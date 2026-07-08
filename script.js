@@ -66,6 +66,26 @@ function playPopClick() {
   sfx.click2.play().catch(() => {});
 }
 
+// Tiny synthesized tick for the counter animation. `level` (0–1)
+// scales the already-quiet volume so it fades with visibility.
+let tickCtx = null;
+function playTick(level) {
+  if (!audioStarted || level <= 0.01) return;
+  try {
+    tickCtx = tickCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const t = tickCtx.currentTime;
+    const osc  = tickCtx.createOscillator();
+    const gain = tickCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.value = 1800;
+    gain.gain.setValueAtTime(0.018 * level, t);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.03);
+    osc.connect(gain).connect(tickCtx.destination);
+    osc.start(t);
+    osc.stop(t + 0.035);
+  } catch (e) { /* Web Audio unavailable — skip ticks */ }
+}
+
 // Hover click sound on interactive elements (delegated).
 // No sound on: contact circle button, carousel arrows, video thumbnails,
 // or View Work (it gets a single click sound on open instead).
@@ -183,6 +203,15 @@ const storyAbout = document.getElementById('story-about');
 
 let statsPlayed = false;
 
+// Split the About title into letters for the staggered sweep-in
+(function () {
+  const title = document.querySelector('.story__about-title');
+  if (!title) return;
+  title.innerHTML = title.textContent.split('').map((c, i) =>
+    `<span class="char" style="transition-delay:${i * 45}ms">${c === ' ' ? '&nbsp;' : c}</span>`
+  ).join('');
+})();
+
 function clamp01(v) { return Math.max(0, Math.min(1, v)); }
 function phase(p, a, b) {
   const t = clamp01((p - a) / (b - a));
@@ -236,6 +265,7 @@ function renderStory(p) {
   const aboutIn = phase(p, 0.76, 0.9);
   storyAbout.style.opacity = aboutIn;
   storyAbout.style.pointerEvents = aboutIn > 0.5 ? 'auto' : 'none';
+  storyAbout.classList.toggle('chars-in', aboutIn > 0.15);
 
   // Stats animate once about is visible
   if (p > 0.82 && !statsPlayed) {
@@ -262,7 +292,7 @@ function renderStory(p) {
   const playBtn = document.getElementById('story-play');
   if (!playBtn || !story) return;
 
-  const DURATION = 2600; // ms — fixed, so the whoosh always lands in time
+  const DURATION = 3800; // ms — paced to the ~4s whoosh so sound and motion land together
   let playing = false;
 
   function easeInOutCubic(t) {
@@ -341,10 +371,18 @@ function animateStats(section) {
     });
 
     const start = performance.now();
+    let lastTickAt = 0;
 
     function tick(now) {
       const p     = Math.min((now - start) / duration, 1);
       const eased = 1 - Math.pow(1 - p, 3);
+
+      // Soft tick in time with the counting, fading with visibility
+      if (p < 1 && now - lastTickAt > 110) {
+        lastTickAt = now;
+        const vis = storyAbout ? parseFloat(storyAbout.style.opacity || 0) : 0;
+        playTick(vis);
+      }
 
       counters.forEach(({ el, target, suffix }) => {
         el.textContent = Math.round(eased * target) + suffix;
@@ -443,9 +481,12 @@ const clientVideos = {
   fon: [
     'assets/work/fon-1.mp4',
     'assets/work/fon-2.mp4',
+    'assets/work/fon-3.mp4',
   ],
   bruno: [
     'assets/work/bruno-1.mp4',
+    'assets/work/bruno-2.mp4',
+    'assets/work/bruno-3.mp4',
   ],
 };
 
