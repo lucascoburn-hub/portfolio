@@ -4,7 +4,6 @@
 const sfx = {
   subhit:   document.getElementById('sfx-subhit'),
   ambience: document.getElementById('sfx-ambience'),
-  whoosh:   document.getElementById('sfx-whoosh'),
   cwhoosh:  document.getElementById('sfx-cwhoosh'),
   click:    document.getElementById('sfx-click'),
   click2:   document.getElementById('sfx-click2'),
@@ -12,7 +11,6 @@ const sfx = {
 
 sfx.subhit.volume   = 0.9;   // the entry boom — loud but clean
 sfx.ambience.volume = 0;
-sfx.whoosh.volume   = 0.16;  // scroll transformation whoosh
 sfx.cwhoosh.volume  = 0.12;  // carousel slide swoosh
 sfx.click.volume    = 0.2;   // hover blip
 sfx.click2.volume   = 0.1;   // pop-up open click
@@ -53,12 +51,6 @@ setInterval(() => {
   const v = sfx.ambience.volume;
   sfx.ambience.volume = Math.max(0, Math.min(1, v + (ambienceTarget - v) * 0.08));
 }, 80);
-
-function playWhoosh() {
-  if (!audioStarted) return;
-  sfx.whoosh.currentTime = 0;
-  sfx.whoosh.play().catch(() => {});
-}
 
 function playClick() {
   if (!audioStarted) return;
@@ -187,8 +179,7 @@ const storyImg   = document.getElementById('story-img');
 const runningImg = document.getElementById('story-img-running');
 const storyAbout = document.getElementById('story-about');
 
-let whooshPlayed = false;
-let statsPlayed  = false;
+let statsPlayed = false;
 
 function clamp01(v) { return Math.max(0, Math.min(1, v)); }
 function phase(p, a, b) {
@@ -196,31 +187,42 @@ function phase(p, a, b) {
   return t * t * (3 - 2 * t); // smoothstep
 }
 
-let storyRaf = false;
-function updateStory() {
-  storyRaf = false;
+// Scroll progress is lerped each frame so discrete wheel steps
+// become a continuous glide instead of visible jumps.
+let pTarget = 0;
+let pSmooth = 0;
+
+function readScrollTarget() {
   if (!story) return;
+  const total = story.offsetHeight - window.innerHeight;
+  pTarget = clamp01((-story.getBoundingClientRect().top) / total);
+}
+window.addEventListener('scroll', readScrollTarget, { passive: true });
+window.addEventListener('resize', readScrollTarget);
+readScrollTarget();
+pSmooth = pTarget;
+
+function renderStory(p) {
+  const vw = window.innerWidth;
   const vh = window.innerHeight;
-  const total = story.offsetHeight - vh;
-  const p = clamp01((-story.getBoundingClientRect().top) / total);
 
   // 1. Hero text fades out completely first
   const heroFade = 1 - phase(p, 0.02, 0.2);
   storyHero.style.opacity = heroFade;
   storyHero.style.visibility = heroFade < 0.01 ? 'hidden' : 'visible';
 
-  // 2. Only then the image grows to cover the screen (16:9 box, cover scale)
+  // 2. The 16:9 mask opens until the (already fullscreen) photo fills
+  //    the viewport — no pixel scaling, so the reveal stays crisp.
   const grow = phase(p, 0.22, 0.58);
-  const coverScale = Math.max(
-    window.innerWidth  / storyImg.offsetWidth,
-    window.innerHeight / storyImg.offsetHeight
-  );
-  const scale = 1 + grow * (coverScale - 1);
-  const yDrift = grow * -4; // settle to true center as it fills
-  storyImg.style.transform =
-    `translate(-50%, calc(-50% + ${yDrift}vh)) scale(${scale})`;
+  const frameW = Math.min(vw * (vw <= 900 ? 0.92 : 0.74), vh * 1.18);
+  const frameH = frameW * 9 / 16;
+  const insetX      = ((vw - frameW) / 2) * (1 - grow);
+  const insetTop    = (vh * 0.54 - frameH / 2) * (1 - grow);
+  const insetBottom = (vh * 0.46 - frameH / 2) * (1 - grow);
+  storyImg.style.clipPath =
+    `inset(${insetTop}px ${insetX}px ${insetBottom}px ${insetX}px)`;
 
-  // 3. Crossfade mountain → running as the growth finishes
+  // 3. Crossfade mountain → running as the reveal finishes
   runningImg.style.opacity = phase(p, 0.52, 0.64);
 
   // 4. Hold the running image alone for a beat…
@@ -228,10 +230,6 @@ function updateStory() {
   const aboutIn = phase(p, 0.76, 0.9);
   storyAbout.style.opacity = aboutIn;
   storyAbout.style.pointerEvents = aboutIn > 0.5 ? 'auto' : 'none';
-
-  // Whoosh rides along with the image movement
-  if (p > 0.22 && !whooshPlayed) { whooshPlayed = true; playWhoosh(); }
-  if (p < 0.08 && whooshPlayed) whooshPlayed = false;
 
   // Stats animate once about is visible
   if (p > 0.82 && !statsPlayed) {
@@ -244,11 +242,14 @@ function updateStory() {
   ambienceTarget = 0.1 * (1 - phase(p, 0.3, 0.7));
 }
 
-window.addEventListener('scroll', () => {
-  if (!storyRaf) { storyRaf = true; requestAnimationFrame(updateStory); }
-}, { passive: true });
-window.addEventListener('resize', updateStory);
-updateStory();
+(function storyLoop() {
+  if (story) {
+    pSmooth += (pTarget - pSmooth) * 0.09;
+    if (Math.abs(pTarget - pSmooth) < 0.0005) pSmooth = pTarget;
+    renderStory(pSmooth);
+  }
+  requestAnimationFrame(storyLoop);
+})();
 
 /* ══ SCROLL REVEAL ══════════════════════════════════════════ */
 const revealObserver = new IntersectionObserver(entries => {
