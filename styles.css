@@ -214,6 +214,38 @@ body {
   color: var(--forest);
 }
 
+/* Play-intro button — bottom centre of the hero */
+.story__play-btn {
+  position: absolute;
+  left: 50%;
+  bottom: 44px;
+  transform: translateX(-50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid rgba(22, 42, 44, 0.35);
+  background: rgba(254, 252, 246, 0.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--midnight);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  transition: background 0.25s, border-color 0.25s, transform 0.25s;
+  animation: playBtnNudge 2.4s ease-in-out infinite;
+}
+.story__play-btn:hover {
+  background: var(--cloud);
+  border-color: var(--midnight);
+}
+.story__play-btn svg { width: 22px; height: 22px; }
+@keyframes playBtnNudge {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(6px); }
+}
+
 /* Fullscreen photo masked down to a centered 16:9 frame.
    The mask (clip-path) opens as you scroll — the pixels never rescale,
    so the reveal stays crisp. JS drives the inset each frame. */

@@ -5,6 +5,7 @@ const sfx = {
   subhit:   document.getElementById('sfx-subhit'),
   ambience: document.getElementById('sfx-ambience'),
   cwhoosh:  document.getElementById('sfx-cwhoosh'),
+  whoosh:   document.getElementById('sfx-whoosh'),
   click:    document.getElementById('sfx-click'),
   click2:   document.getElementById('sfx-click2'),
 };
@@ -12,6 +13,7 @@ const sfx = {
 sfx.subhit.volume   = 0.9;   // the entry boom — loud but clean
 sfx.ambience.volume = 0;
 sfx.cwhoosh.volume  = 0.12;  // carousel slide swoosh
+sfx.whoosh.volume   = 0.3;   // intro auto-play whoosh
 sfx.click.volume    = 0.2;   // hover blip
 sfx.click2.volume   = 0.1;   // pop-up open click
 
@@ -196,6 +198,10 @@ function readScrollTarget() {
   if (!story) return;
   const total = story.offsetHeight - window.innerHeight;
   pTarget = clamp01((-story.getBoundingClientRect().top) / total);
+  // Keep the story current even if rAF is throttled (background tabs,
+  // battery saver) — the loop takes over again once frames resume.
+  pSmooth += (pTarget - pSmooth) * 0.09;
+  renderStory(pSmooth);
 }
 window.addEventListener('scroll', readScrollTarget, { passive: true });
 window.addEventListener('resize', readScrollTarget);
@@ -249,6 +255,49 @@ function renderStory(p) {
     renderStory(pSmooth);
   }
   requestAnimationFrame(storyLoop);
+})();
+
+/* ══ PLAY-INTRO BUTTON (scored auto-scroll) ═════════════════ */
+(function () {
+  const playBtn = document.getElementById('story-play');
+  if (!playBtn || !story) return;
+
+  const DURATION = 2600; // ms — fixed, so the whoosh always lands in time
+  let playing = false;
+
+  function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+
+  function cancelOnUserScroll() { playing = false; }
+
+  playBtn.addEventListener('click', () => {
+    if (playing) return;
+    playing = true;
+
+    // Score the shot: whoosh starts with the motion
+    if (audioStarted) {
+      sfx.whoosh.currentTime = 0;
+      sfx.whoosh.play().catch(() => {});
+    }
+
+    const startY = window.scrollY;
+    const endY   = story.offsetHeight - window.innerHeight;
+    const t0     = performance.now();
+
+    // Hand over control if the user scrolls mid-play
+    window.addEventListener('wheel', cancelOnUserScroll, { passive: true, once: true });
+    window.addEventListener('touchmove', cancelOnUserScroll, { passive: true, once: true });
+
+    function step(now) {
+      if (!playing) return;
+      const t = Math.min((now - t0) / DURATION, 1);
+      window.scrollTo({ top: startY + (endY - startY) * easeInOutCubic(t), behavior: 'instant' });
+      if (t < 1) requestAnimationFrame(step);
+      else playing = false;
+    }
+    requestAnimationFrame(step);
+  });
 })();
 
 /* ══ SCROLL REVEAL ══════════════════════════════════════════ */
