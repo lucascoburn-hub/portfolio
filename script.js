@@ -78,7 +78,7 @@ function playTick(level) {
     const gain = tickCtx.createGain();
     osc.type = 'triangle';
     osc.frequency.value = 1800;
-    gain.gain.setValueAtTime(0.018 * level, t);
+    gain.gain.setValueAtTime(0.008 * level, t);
     gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.03);
     osc.connect(gain).connect(tickCtx.destination);
     osc.start(t);
@@ -377,11 +377,14 @@ function animateStats(section) {
       const p     = Math.min((now - start) / duration, 1);
       const eased = 1 - Math.pow(1 - p, 3);
 
-      // Soft tick in time with the counting, fading with visibility
+      // Soft tick in time with the counting — silent once the stats
+      // have scrolled out of the viewport.
       if (p < 1 && now - lastTickAt > 110) {
         lastTickAt = now;
+        const rect = section.getBoundingClientRect();
+        const onScreen = rect.top < window.innerHeight && rect.bottom > 0;
         const vis = storyAbout ? parseFloat(storyAbout.style.opacity || 0) : 0;
-        playTick(vis);
+        playTick(onScreen ? vis : 0);
       }
 
       counters.forEach(({ el, target, suffix }) => {
