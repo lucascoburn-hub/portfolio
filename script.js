@@ -144,6 +144,20 @@ document.addEventListener('pointerover', e => {
   animateTrail();
 })();
 
+/* ══ MELBOURNE CLOCK ════════════════════════════════════════ */
+(function () {
+  const clock = document.getElementById('nav-clock');
+  if (!clock) return;
+  const fmt = new Intl.DateTimeFormat('en-AU', {
+    timeZone: 'Australia/Melbourne',
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+    hour12: false,
+  });
+  function tick() { clock.textContent = fmt.format(new Date()); }
+  tick();
+  setInterval(tick, 1000);
+})();
+
 /* ══ NAV ════════════════════════════════════════════════════ */
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {
@@ -189,13 +203,13 @@ function updateStory() {
   const total = story.offsetHeight - vh;
   const p = clamp01((-story.getBoundingClientRect().top) / total);
 
-  // Hero text fades out early
-  const heroFade = 1 - phase(p, 0.02, 0.22);
+  // 1. Hero text fades out completely first
+  const heroFade = 1 - phase(p, 0.02, 0.2);
   storyHero.style.opacity = heroFade;
   storyHero.style.visibility = heroFade < 0.01 ? 'hidden' : 'visible';
 
-  // Image grows until it fully covers the screen (16:9 box, cover scale)
-  const grow = phase(p, 0.08, 0.62);
+  // 2. Only then the image grows to cover the screen (16:9 box, cover scale)
+  const grow = phase(p, 0.22, 0.58);
   const coverScale = Math.max(
     window.innerWidth  / storyImg.offsetWidth,
     window.innerHeight / storyImg.offsetHeight
@@ -205,20 +219,21 @@ function updateStory() {
   storyImg.style.transform =
     `translate(-50%, calc(-50% + ${yDrift}vh)) scale(${scale})`;
 
-  // Crossfade mountain → running
-  runningImg.style.opacity = phase(p, 0.5, 0.66);
+  // 3. Crossfade mountain → running as the growth finishes
+  runningImg.style.opacity = phase(p, 0.52, 0.64);
 
-  // About text fades in over the fullscreen photo
-  const aboutIn = phase(p, 0.64, 0.82);
+  // 4. Hold the running image alone for a beat…
+  // 5. …then the about text and animations fade in
+  const aboutIn = phase(p, 0.76, 0.9);
   storyAbout.style.opacity = aboutIn;
   storyAbout.style.pointerEvents = aboutIn > 0.5 ? 'auto' : 'none';
 
   // Whoosh rides along with the image movement
-  if (p > 0.1 && !whooshPlayed) { whooshPlayed = true; playWhoosh(); }
-  if (p < 0.04 && whooshPlayed) whooshPlayed = false;
+  if (p > 0.22 && !whooshPlayed) { whooshPlayed = true; playWhoosh(); }
+  if (p < 0.08 && whooshPlayed) whooshPlayed = false;
 
   // Stats animate once about is visible
-  if (p > 0.7 && !statsPlayed) {
+  if (p > 0.82 && !statsPlayed) {
     statsPlayed = true;
     const stats = document.getElementById('stats');
     if (stats) animateStats(stats);

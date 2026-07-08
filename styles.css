@@ -114,26 +114,23 @@ body {
   padding: 14px 48px;
   box-shadow: 0 1px 0 rgba(22, 42, 44, 0.08);
 }
-.nav__logo {
-  font-family: var(--font-bold);
-  font-weight: 700;
-  font-size: 1rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+.nav__meta {
+  font-family: var(--font-serif);
+  font-size: 0.92rem;
+  letter-spacing: -0.04em;
   color: var(--midnight);
-  text-decoration: none;
+  white-space: nowrap;
 }
-.nav__links { display: flex; gap: 40px; list-style: none; }
+.nav__links { display: flex; gap: 32px; list-style: none; }
 .nav__links a {
-  font-family: var(--font-med);
-  font-size: 0.78rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--storm);
+  font-family: var(--font-serif);
+  font-size: 0.92rem;
+  letter-spacing: -0.04em;
+  color: var(--midnight);
   text-decoration: none;
   transition: color 0.2s;
 }
-.nav__links a:hover { color: var(--midnight); }
+.nav__links a:hover { color: var(--forest); }
 .nav__hamburger {
   display: none;
   flex-direction: column;
@@ -168,16 +165,6 @@ body {
   inset: 0;
   z-index: 2;
   pointer-events: none;
-}
-.story__meta {
-  position: absolute;
-  top: 76px; left: 48px; right: 48px;
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--font-serif);
-  font-size: 0.82rem;
-  letter-spacing: -0.04em;
-  color: var(--midnight);
 }
 .story__name {
   position: absolute;
@@ -233,7 +220,7 @@ body {
   z-index: 1;
   left: 50%;
   top: 54%;
-  width: min(62vw, 99.5vh); /* 16:9 box that never exceeds the viewport */
+  width: min(74vw, 118vh); /* 16:9 box, roomy but inside the viewport */
   aspect-ratio: 16 / 9;
   transform: translate(-50%, -50%);
   overflow: hidden;
@@ -999,7 +986,7 @@ body {
   .nav__hamburger { display: flex; z-index: 100; }
 
   .story { height: 320vh; }
-  .story__meta { top: 64px; left: 24px; right: 24px; font-size: 0.66rem; }
+  .nav__meta--center { display: none; }
   .story__name { font-size: clamp(2.6rem, 12vw, 4rem); top: 15vh; }
   .story__roles { left: 24px; bottom: 40px; gap: 8px; }
   .story__role-label { font-size: 0.9rem; }
