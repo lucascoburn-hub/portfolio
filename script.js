@@ -47,11 +47,20 @@ function startAudio() {
   });
 }
 
-// Smooth ambience volume toward target
+// Smooth ambience volume toward target. The exponential fade would
+// hover just above zero forever, so snap to 0 and pause outright once
+// it's inaudible — and resume when scrolling back to the top.
 setInterval(() => {
   if (!audioStarted) return;
   const v = sfx.ambience.volume;
-  sfx.ambience.volume = Math.max(0, Math.min(1, v + (ambienceTarget - v) * 0.08));
+  let nv = Math.max(0, Math.min(1, v + (ambienceTarget - v) * 0.12));
+  if (ambienceTarget <= 0.001 && nv < 0.005) nv = 0;
+  sfx.ambience.volume = nv;
+  if (nv === 0 && !sfx.ambience.paused) {
+    sfx.ambience.pause();
+  } else if (ambienceTarget > 0.001 && sfx.ambience.paused) {
+    sfx.ambience.play().catch(() => {});
+  }
 }, 80);
 
 function playClick() {
