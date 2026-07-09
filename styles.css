@@ -307,7 +307,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top; /* never crop the top of the head */
+  object-position: center; /* 4:5 crop keeps the full figure with headroom */
 }
 .story__run-fg { will-change: transform; }
 

@@ -232,14 +232,19 @@ function phase(p, a, b) {
 // become a continuous glide instead of visible jumps.
 let pTarget = 0;
 let pSmooth = 0;
+let oTarget = 0; // overshoot: scroll past the story toward Featured Works
+let oSmooth = 0;
 
 function readScrollTarget() {
   if (!story) return;
   const total = story.offsetHeight - window.innerHeight;
-  pTarget = clamp01((-story.getBoundingClientRect().top) / total);
+  const top = -story.getBoundingClientRect().top;
+  pTarget = clamp01(top / total);
+  oTarget = clamp01((top - total) / window.innerHeight);
   // Keep the story current even if rAF is throttled (background tabs,
   // battery saver) — the loop takes over again once frames resume.
   pSmooth += (pTarget - pSmooth) * 0.09;
+  oSmooth += (oTarget - oSmooth) * 0.09;
   renderStory(pSmooth);
 }
 window.addEventListener('scroll', readScrollTarget, { passive: true });
@@ -266,16 +271,19 @@ function renderStory(p) {
   const hA = wA * 9 / 16;
   const A = { t: vh * 0.54 - hA / 2, b: vh * 0.46 - hA / 2, l: (vw - wA) / 2, r: (vw - wA) / 2 };
   const B = { t: vh * 0.07, b: vh * 0.07, l: vw * 0.05, r: vw * 0.05 };
-  // The About frame is portrait 9:16 — matches the photo exactly,
-  // so nothing gets cropped (head included).
+  // The About frame is 4:5 portrait, centred in the gap between the
+  // end of the About text column and the right edge of the screen.
   let C;
   if (mobile) {
-    const hC = vh * 0.42, wC = hC * 9 / 16;
+    const hC = vh * 0.42, wC = hC * 4 / 5;
     C = { t: 76, b: vh - 76 - hC, l: (vw - wC) / 2, r: (vw - wC) / 2 };
   } else {
-    const hC = Math.min(vh * 0.78, vw * 0.42 * 16 / 9);
-    const wC = hC * 9 / 16;
-    C = { t: (vh - hC) / 2, b: (vh - hC) / 2, l: vw - wC - 64, r: 64 };
+    const textRight = 48 + 420; // about padding + text column width
+    const gap = vw - textRight;
+    const hC = Math.min(vh * 0.84, gap * 0.9 * 5 / 4);
+    const wC = hC * 4 / 5;
+    const cx = textRight + gap / 2; // centre of the free space
+    C = { t: (vh - hC) / 2, b: (vh - hC) / 2, l: cx - wC / 2, r: vw - cx - wC / 2 };
   }
 
   const grow  = phase(p, 0.22, 0.5);
@@ -296,9 +304,10 @@ function renderStory(p) {
   runningImg.style.height  = fh + 'px';
   runningImg.style.opacity = phase(p, 0.5, 0.62);
 
-  // 4. Parallax: the rotoscoped runner drifts down, background still
-  storyRunFg.style.transform =
-    `translateY(${phase(p, 0.64, 1) * fh * 0.12}px)`;
+  // 4. Parallax: the rotoscoped runner drifts down, background still —
+  //    and keeps drifting as you scroll on toward Featured Works
+  const drift = (phase(p, 0.64, 1) * 0.1 + oSmooth * 0.14) * fh;
+  storyRunFg.style.transform = `translateY(${drift}px)`;
 
   // 5. About text fades in beside the frame, on cream
   const aboutIn = phase(p, 0.74, 0.88);
@@ -320,7 +329,9 @@ function renderStory(p) {
 (function storyLoop() {
   if (story) {
     pSmooth += (pTarget - pSmooth) * 0.09;
+    oSmooth += (oTarget - oSmooth) * 0.09;
     if (Math.abs(pTarget - pSmooth) < 0.0005) pSmooth = pTarget;
+    if (Math.abs(oTarget - oSmooth) < 0.0005) oSmooth = oTarget;
     renderStory(pSmooth);
   }
   requestAnimationFrame(storyLoop);
