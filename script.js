@@ -266,14 +266,16 @@ function renderStory(p) {
   const hA = wA * 9 / 16;
   const A = { t: vh * 0.54 - hA / 2, b: vh * 0.46 - hA / 2, l: (vw - wA) / 2, r: (vw - wA) / 2 };
   const B = { t: vh * 0.07, b: vh * 0.07, l: vw * 0.05, r: vw * 0.05 };
+  // The About frame is portrait 9:16 — matches the photo exactly,
+  // so nothing gets cropped (head included).
   let C;
   if (mobile) {
-    const wC = vw * 0.92, hC = wC * 9 / 16;
+    const hC = vh * 0.42, wC = hC * 9 / 16;
     C = { t: 76, b: vh - 76 - hC, l: (vw - wC) / 2, r: (vw - wC) / 2 };
   } else {
-    const wC = Math.min(vw * 0.46, vh * 0.72 * 16 / 9);
-    const hC = wC * 9 / 16;
-    C = { t: (vh - hC) / 2, b: (vh - hC) / 2, l: vw - wC - 48, r: 48 };
+    const hC = Math.min(vh * 0.78, vw * 0.42 * 16 / 9);
+    const wC = hC * 9 / 16;
+    C = { t: (vh - hC) / 2, b: (vh - hC) / 2, l: vw - wC - 64, r: 64 };
   }
 
   const grow  = phase(p, 0.22, 0.5);
@@ -647,6 +649,18 @@ document.addEventListener('keydown', e => {
   new IntersectionObserver(entries => {
     entries.forEach(e => headline.classList.toggle('in', e.isIntersecting));
   }, { threshold: 0.35 }).observe(contact);
+
+  // Same letter treatment for "Book a Call" inside the circle —
+  // it rolls up each time the circle appears (.is-visible)
+  const btnText = document.getElementById('cursor-btn-text');
+  if (btnText) {
+    let j = 0;
+    btnText.innerHTML = btnText.textContent.trim().split(' ').map(word =>
+      `<span class="word">${word.split('').map(c =>
+        `<span class="char" style="transition-delay:${(j++) * 35}ms">${c}</span>`
+      ).join('')}</span>`
+    ).join(' ');
+  }
 })();
 
 /* ══ CURSOR-FOLLOWING BUTTON (Contact) ══════════════════════ */

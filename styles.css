@@ -307,7 +307,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 58%;
+  object-position: center top; /* never crop the top of the head */
 }
 .story__run-fg { will-change: transform; }
 
@@ -922,6 +922,18 @@ body {
   line-height: 1.4;
   user-select: none;
 }
+/* Letter-by-letter roll-up inside the circle each time it appears */
+.cursor-btn__text .word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+.cursor-btn__text .char {
+  display: inline-block;
+  transform: translateY(120%);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cursor-btn.is-visible .char { transform: translateY(0); }
 
 /* ── FOOTER ───────────────────────────────────────────────── */
 .footer {
@@ -1109,8 +1121,8 @@ body {
   .story__role-num { font-size: 0.7rem; }
   .story__tagline { right: 24px; bottom: 36px; font-size: 0.85rem; }
   .story__ctas { bottom: 128px; }
-  /* Frame sits at the top on phones (92vw wide, 16:9) — clear it */
-  .story__about { padding: calc(76px + 52vw + 18px) 24px 22px; }
+  /* Frame sits at the top on phones (portrait 9:16, 42vh tall) — clear it */
+  .story__about { padding: calc(76px + 42vh + 16px) 24px 22px; }
   .story__about-inner { max-width: 100%; gap: 10px; }
   .story__about-title { font-size: 2rem; }
   .story__about-bio { font-size: 0.88rem; }
@@ -1168,6 +1180,8 @@ body {
     margin-top: 24px;
   }
   .cursor-btn.is-visible { transform: none; }
+  /* No hover reveal on touch — letters always shown */
+  .cursor-btn .char { transform: none !important; transition: none !important; }
   .footer { padding: 22px 24px; font-size: 0.7rem; }
 
   /* Video modal: vertical stack of thumbnails */
