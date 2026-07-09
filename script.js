@@ -209,6 +209,7 @@ const storyHero  = document.getElementById('story-hero');
 const storyImg   = document.getElementById('story-img');
 const runningImg = document.getElementById('story-img-running');
 const storyAbout = document.getElementById('story-about');
+const storyRunFg = document.getElementById('story-run-fg');
 
 let statsPlayed = false;
 
@@ -246,32 +247,59 @@ window.addEventListener('resize', readScrollTarget);
 readScrollTarget();
 pSmooth = pTarget;
 
+function lerpN(a, b, t) { return a + (b - a) * t; }
+
 function renderStory(p) {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
+  const mobile = vw <= 900;
 
   // 1. Hero text fades out completely first
   const heroFade = 1 - phase(p, 0.02, 0.2);
   storyHero.style.opacity = heroFade;
   storyHero.style.visibility = heroFade < 0.01 ? 'hidden' : 'visible';
 
-  // 2. The 16:9 mask opens until the (already fullscreen) photo fills
-  //    the viewport — no pixel scaling, so the reveal stays crisp.
-  const grow = phase(p, 0.22, 0.58);
-  const frameW = Math.min(vw * (vw <= 900 ? 0.92 : 0.74), vh * 1.18);
-  const frameH = frameW * 9 / 16;
-  const insetX      = ((vw - frameW) / 2) * (1 - grow);
-  const insetTop    = (vh * 0.54 - frameH / 2) * (1 - grow);
-  const insetBottom = (vh * 0.46 - frameH / 2) * (1 - grow);
+  // 2. The frame moves through three keyframes — it never covers the
+  //    whole screen, a cream border always remains:
+  //    A: hero frame  →  B: opened wide  →  C: the About-side frame
+  const wA = Math.min(vw * (mobile ? 0.92 : 0.74), vh * 1.18);
+  const hA = wA * 9 / 16;
+  const A = { t: vh * 0.54 - hA / 2, b: vh * 0.46 - hA / 2, l: (vw - wA) / 2, r: (vw - wA) / 2 };
+  const B = { t: vh * 0.07, b: vh * 0.07, l: vw * 0.05, r: vw * 0.05 };
+  let C;
+  if (mobile) {
+    const wC = vw * 0.92, hC = wC * 9 / 16;
+    C = { t: 76, b: vh - 76 - hC, l: (vw - wC) / 2, r: (vw - wC) / 2 };
+  } else {
+    const wC = Math.min(vw * 0.46, vh * 0.72 * 16 / 9);
+    const hC = wC * 9 / 16;
+    C = { t: (vh - hC) / 2, b: (vh - hC) / 2, l: vw - wC - 48, r: 48 };
+  }
+
+  const grow  = phase(p, 0.22, 0.5);
+  const shift = phase(p, 0.62, 0.82);
+  const cur = {};
+  for (const k of ['t', 'b', 'l', 'r']) {
+    cur[k] = lerpN(lerpN(A[k], B[k], grow), C[k], shift);
+  }
   storyImg.style.clipPath =
-    `inset(${insetTop}px ${insetX}px ${insetBottom}px ${insetX}px)`;
+    `inset(${cur.t}px ${cur.r}px ${cur.b}px ${cur.l}px)`;
 
-  // 3. Crossfade mountain → running as the reveal finishes
-  runningImg.style.opacity = phase(p, 0.52, 0.64);
+  // 3. The running scene tracks the frame exactly, crossfading in
+  const fw = vw - cur.l - cur.r;
+  const fh = vh - cur.t - cur.b;
+  runningImg.style.left    = cur.l + 'px';
+  runningImg.style.top     = cur.t + 'px';
+  runningImg.style.width   = fw + 'px';
+  runningImg.style.height  = fh + 'px';
+  runningImg.style.opacity = phase(p, 0.5, 0.62);
 
-  // 4. Hold the running image alone for a beat…
-  // 5. …then the about text and animations fade in
-  const aboutIn = phase(p, 0.76, 0.9);
+  // 4. Parallax: the rotoscoped runner drifts down, background still
+  storyRunFg.style.transform =
+    `translateY(${phase(p, 0.64, 1) * fh * 0.12}px)`;
+
+  // 5. About text fades in beside the frame, on cream
+  const aboutIn = phase(p, 0.74, 0.88);
   storyAbout.style.opacity = aboutIn;
   storyAbout.style.pointerEvents = aboutIn > 0.5 ? 'auto' : 'none';
   storyAbout.classList.toggle('chars-in', aboutIn > 0.15);
@@ -600,6 +628,26 @@ document.addEventListener('keydown', e => {
     else closeModal();
   }
 });
+
+/* ══ CONTACT HEADLINE — letter-by-letter roll-up ════════════ */
+(function () {
+  const headline = document.getElementById('contact-headline');
+  const contact  = document.getElementById('contact');
+  if (!headline || !contact) return;
+
+  // Wrap each word in an overflow-hidden slot, each letter staggered
+  let i = 0;
+  headline.innerHTML = headline.textContent.trim().split(' ').map(word =>
+    `<span class="word">${word.split('').map(c =>
+      `<span class="char" style="transition-delay:${(i++) * 40}ms">${c}</span>`
+    ).join('')}</span>`
+  ).join(' ');
+
+  // Replay every time the section enters view
+  new IntersectionObserver(entries => {
+    entries.forEach(e => headline.classList.toggle('in', e.isIntersecting));
+  }, { threshold: 0.35 }).observe(contact);
+})();
 
 /* ══ CURSOR-FOLLOWING BUTTON (Contact) ══════════════════════ */
 (function () {

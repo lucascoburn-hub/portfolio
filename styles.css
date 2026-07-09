@@ -294,9 +294,24 @@ body {
   height: 100%;
   object-fit: cover;
 }
-.story__img--running { opacity: 0; }
+/* Running scene — background stays still, rotoscoped runner drifts
+   down on scroll. JS keeps this block sized to the current frame. */
+.story__run {
+  position: absolute;
+  opacity: 0;
+  overflow: hidden;
+}
+.story__run-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 58%;
+}
+.story__run-fg { will-change: transform; }
 
-/* About layer — sits on top of the fullscreen running photo */
+/* About layer — text on cream beside the 16:9 frame */
 .story__about {
   position: absolute;
   inset: 0;
@@ -307,9 +322,6 @@ body {
   flex-direction: column;
   justify-content: space-between;
   padding: 100px 48px 48px;
-  background:
-    linear-gradient(180deg, rgba(22,42,44,0) 55%, rgba(22,42,44,0.55) 100%),
-    linear-gradient(90deg, rgba(22,42,44,0.6) 0%, rgba(22,42,44,0.25) 45%, rgba(22,42,44,0) 70%);
 }
 .story__about-inner {
   max-width: 420px;
@@ -321,7 +333,7 @@ body {
   font-family: var(--font-serif);
   font-size: 0.85rem;
   letter-spacing: -0.04em;
-  color: var(--sky);
+  color: var(--storm);
 }
 .story__about-title {
   font-family: var(--font-bold);
@@ -329,7 +341,7 @@ body {
   font-size: clamp(2.6rem, 5vw, 4.2rem);
   letter-spacing: -0.06em;
   text-transform: uppercase;
-  color: var(--cloud);
+  color: var(--midnight);
   line-height: 0.9;
 }
 .story__about-bio {
@@ -337,11 +349,11 @@ body {
   font-size: clamp(0.95rem, 1.15vw, 1.08rem);
   line-height: 1.55;
   letter-spacing: -0.02em;
-  color: var(--cloud);
+  color: var(--midnight);
 }
 .story__about-bio--em {
   font-style: italic;
-  color: var(--sky);
+  color: var(--forest);
 }
 /* Entrance choreography — letters sweep in from the left, then the
    paragraphs and socials follow. Driven by .chars-in from the scroll. */
@@ -386,31 +398,23 @@ body {
   justify-content: center;
   width: 42px;
   height: 42px;
-  border: 1px solid rgba(254, 252, 246, 0.35);
+  border: 1px solid rgba(22, 42, 44, 0.3);
   border-radius: 2px;
-  color: var(--cloud);
-  background: rgba(22, 42, 44, 0.25);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  color: var(--midnight);
+  background: rgba(254, 252, 246, 0.4);
   transition: background 0.25s, border-color 0.25s;
 }
 .about-social-btn:hover {
-  background: rgba(254, 252, 246, 0.15);
-  border-color: rgba(254, 252, 246, 0.7);
+  background: var(--cloud);
+  border-color: var(--midnight);
 }
 .about-social-btn svg { width: 18px; height: 18px; }
 
-/* Light stats over the photo */
-.story__about .chart-line { stroke: var(--cloud); }
-.story__about .chart-dot  { fill: var(--cloud); }
-.story__about .stats__number { color: var(--cloud); }
-.story__about .stats__label  { color: var(--sky); }
-.story__about .story__stat-divider { background: rgba(254, 252, 246, 0.3); }
 .story__stats {
   display: flex;
   align-items: center;
   gap: 48px;
-  max-width: 620px;
+  max-width: min(560px, 44vw);
 }
 .story__stat {
   flex: 1;
@@ -867,6 +871,21 @@ body {
   letter-spacing: -0.02em;
   color: var(--sky);
 }
+/* Letter-by-letter roll-up for the headline (Kyle Pritchard style):
+   each letter rises out of an invisible slot when the section enters view */
+.contact__headline .word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.08em; /* keep descenders from clipping */
+  margin-bottom: -0.08em;
+}
+.contact__headline .char {
+  display: inline-block;
+  transform: translateY(115%);
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.contact__headline.in .char { transform: translateY(0); }
 .cursor-btn {
   position: absolute;
   z-index: 10;
@@ -1090,22 +1109,18 @@ body {
   .story__role-num { font-size: 0.7rem; }
   .story__tagline { right: 24px; bottom: 36px; font-size: 0.85rem; }
   .story__ctas { bottom: 128px; }
-  .story__about { padding: 84px 24px 28px; }
-  .story__about-inner { max-width: 100%; gap: 14px; }
-  .story__about-title { font-size: 2.4rem; }
-  .story__about-bio { font-size: 0.92rem; }
-  /* Stack the stats vertically on phones */
-  .story__stats {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 22px;
-    max-width: 100%;
-  }
-  .story__stat { align-items: flex-start; gap: 6px; }
+  /* Frame sits at the top on phones (92vw wide, 16:9) — clear it */
+  .story__about { padding: calc(76px + 52vw + 18px) 24px 22px; }
+  .story__about-inner { max-width: 100%; gap: 10px; }
+  .story__about-title { font-size: 2rem; }
+  .story__about-bio { font-size: 0.88rem; }
+  /* Compact side-by-side stats on phones */
+  .story__stats { gap: 20px; max-width: 100%; }
+  .story__stat { align-items: flex-start; gap: 5px; }
   .story__stat-divider { display: none; }
-  .stats__chart { max-width: 160px; height: 40px; }
-  .stats__number { font-size: 2.2rem; }
-  .stats__label { font-size: 0.82rem; }
+  .stats__chart { max-width: 120px; height: 32px; }
+  .stats__number { font-size: 1.7rem; }
+  .stats__label { font-size: 0.75rem; }
 
   .clients-scroller { padding: 0 16px 48px; }
   .carousel-header { padding: 80px 8px 36px; }

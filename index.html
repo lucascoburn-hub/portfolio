@@ -58,10 +58,13 @@
         </div>
       </div>
 
-      <!-- Centered photo that grows + transforms -->
+      <!-- Centered photo that reveals + transforms into the About frame -->
       <div class="story__img-wrap" id="story-img">
         <img class="story__img story__img--mountain" src="assets/photos/mountain.jpg" alt="Lucas overlooking a misty mountain lake">
-        <img class="story__img story__img--running" id="story-img-running" src="assets/photos/running.jpg" alt="Lucas running">
+        <div class="story__run" id="story-img-running">
+          <img class="story__run-layer" src="assets/photos/running-bg.jpg" alt="">
+          <img class="story__run-layer story__run-fg" id="story-run-fg" src="assets/photos/running-fg.png" alt="Lucas running">
+        </div>
       </div>
 
       <!-- About layer (fades in) -->
@@ -360,7 +363,7 @@
     <div class="contact__overlay" aria-hidden="true"></div>
     <div class="contact__inner fade-up">
       <p class="contact__eyebrow">Get in touch</p>
-      <h2 class="contact__headline">Connect<br>with Me</h2>
+      <h2 class="contact__headline" id="contact-headline">Book a Call</h2>
       <p class="contact__sub">Got a question or project in mind? Lets chat.</p>
     </div>
     <!-- Cursor-following booking button (opens Cal.com popup) -->
