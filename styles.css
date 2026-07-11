@@ -490,12 +490,6 @@ body {
   color: var(--midnight);
   line-height: 0.9;
 }
-.carousel-title .serif-cap {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: -0.04em;
-}
 
 .carousel-viewport {
   height: 78vh;
