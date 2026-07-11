@@ -210,6 +210,7 @@ const storyImg   = document.getElementById('story-img');
 const runningImg = document.getElementById('story-img-running');
 const storyAbout = document.getElementById('story-about');
 const storyRunFg = document.getElementById('story-run-fg');
+const mountainImg = document.querySelector('.story__img--mountain');
 
 let statsPlayed = false;
 
@@ -238,6 +239,7 @@ let oSmooth = 0;
 function readScrollTarget() {
   if (!story) return;
   const total = story.offsetHeight - window.innerHeight;
+  if (total <= 0 || window.innerHeight <= 0) return; // layout not ready
   const top = -story.getBoundingClientRect().top;
   pTarget = clamp01(top / total);
   oTarget = clamp01((top - total) / window.innerHeight);
@@ -270,7 +272,7 @@ function renderStory(p) {
   const wA = Math.min(vw * (mobile ? 0.92 : 0.74), vh * 1.18);
   const hA = wA * 9 / 16;
   const A = { t: vh * 0.54 - hA / 2, b: vh * 0.46 - hA / 2, l: (vw - wA) / 2, r: (vw - wA) / 2 };
-  const B = { t: vh * 0.07, b: vh * 0.07, l: vw * 0.05, r: vw * 0.05 };
+  const B = { t: 0, b: 0, l: 0, r: 0 }; // fully covers the screen mid-transition
   // The About frame is 4:5 portrait, centred in the gap between the
   // end of the About text column and the right edge of the screen.
   let C;
@@ -296,13 +298,16 @@ function renderStory(p) {
     `inset(${cur.t}px ${cur.r}px ${cur.b}px ${cur.l}px)`;
 
   // 3. The running scene tracks the frame exactly, crossfading in
+  //    (the mountain fades out underneath so it can never linger behind)
   const fw = vw - cur.l - cur.r;
   const fh = vh - cur.t - cur.b;
+  const xfade = phase(p, 0.5, 0.62);
   runningImg.style.left    = cur.l + 'px';
   runningImg.style.top     = cur.t + 'px';
   runningImg.style.width   = fw + 'px';
   runningImg.style.height  = fh + 'px';
-  runningImg.style.opacity = phase(p, 0.5, 0.62);
+  runningImg.style.opacity = xfade;
+  mountainImg.style.opacity = 1 - xfade;
 
   // 4. Parallax: the rotoscoped runner drifts down, background still —
   //    and keeps drifting as you scroll on toward Featured Works
@@ -328,6 +333,12 @@ function renderStory(p) {
 
 (function storyLoop() {
   if (story) {
+    // A degenerate layout frame (hidden tab, mid-resize) can produce
+    // NaN — recover instead of freezing the story forever.
+    if (!Number.isFinite(pTarget)) pTarget = 0;
+    if (!Number.isFinite(oTarget)) oTarget = 0;
+    if (!Number.isFinite(pSmooth)) pSmooth = pTarget;
+    if (!Number.isFinite(oSmooth)) oSmooth = oTarget;
     pSmooth += (pTarget - pSmooth) * 0.09;
     oSmooth += (oTarget - oSmooth) * 0.09;
     if (Math.abs(pTarget - pSmooth) < 0.0005) pSmooth = pTarget;
