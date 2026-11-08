@@ -131,6 +131,31 @@ body {
   transition: color 0.2s;
 }
 .nav__links a:hover { color: var(--forest); }
+.nav__right {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.nav__sound {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: none;
+  border: 1px solid rgba(22, 42, 44, 0.25);
+  border-radius: 50%;
+  color: var(--midnight);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.nav__sound:hover { border-color: var(--midnight); }
+.nav__sound svg { width: 16px; height: 16px; }
+.nav__sound-off { display: none; }
+.nav__sound.is-muted .nav__sound-on  { display: none; }
+.nav__sound.is-muted .nav__sound-off { display: block; }
+.nav__sound.is-muted { color: var(--storm); }
 .nav__hamburger {
   display: none;
   flex-direction: column;
@@ -872,6 +897,20 @@ body {
   letter-spacing: -0.02em;
   color: var(--sky);
 }
+.contact__email {
+  display: inline-block;
+  margin-top: 14px;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  letter-spacing: -0.02em;
+  color: var(--cloud);
+  text-decoration: underline;
+  text-decoration-color: rgba(254, 252, 246, 0.4);
+  text-underline-offset: 4px;
+  cursor: pointer;
+  transition: text-decoration-color 0.2s;
+}
+.contact__email:hover { text-decoration-color: var(--cloud); }
 /* Letter-by-letter roll-up for the headline (Kyle Pritchard style):
    each letter rises out of an invisible slot when the section enters view */
 .contact__headline .word {
@@ -948,6 +987,12 @@ body {
   letter-spacing: -0.02em;
   color: var(--storm);
 }
+.footer__email {
+  color: var(--midnight);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer__email:hover { color: var(--forest); }
 
 /* ── VIDEO MODAL ──────────────────────────────────────────── */
 .modal-backdrop {
@@ -1183,7 +1228,13 @@ body {
   .cursor-btn.is-visible { transform: none; }
   /* No hover reveal on touch — letters always shown */
   .cursor-btn .char { transform: none !important; transition: none !important; }
-  .footer { padding: 22px 24px; font-size: 0.7rem; }
+  .footer {
+    padding: 22px 24px;
+    font-size: 0.75rem;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .nav__right { gap: 14px; }
 
   /* Video modal: vertical stack of thumbnails */
   .video-modal { padding: 24px 16px; }

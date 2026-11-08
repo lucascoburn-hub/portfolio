@@ -19,14 +19,28 @@
   <nav class="nav" id="nav">
     <span class="nav__meta">[ video editor &amp; creative ]</span>
     <span class="nav__meta nav__meta--center">Melbourne, Australia — <span id="nav-clock">00:00:00</span></span>
-    <ul class="nav__links" id="nav-links">
-      <li><a href="#work">Work</a></li>
-      <li><a href="#resources">Resources</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <button class="nav__hamburger" id="hamburger" aria-label="Toggle menu">
-      <span></span><span></span>
-    </button>
+    <div class="nav__right">
+      <ul class="nav__links" id="nav-links">
+        <li><a href="#work">Work</a></li>
+        <li><a href="#resources">Resources</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button class="nav__sound" id="sound-toggle" type="button" aria-label="Mute sound" aria-pressed="false">
+        <svg class="nav__sound-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="4 9 8 9 13 5 13 19 8 15 4 15"/>
+          <path d="M16.5 9.5a3.5 3.5 0 0 1 0 5"/>
+          <path d="M19 7a7 7 0 0 1 0 10"/>
+        </svg>
+        <svg class="nav__sound-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="4 9 8 9 13 5 13 19 8 15 4 15"/>
+          <line x1="17" y1="10" x2="21" y2="14"/>
+          <line x1="21" y1="10" x2="17" y2="14"/>
+        </svg>
+      </button>
+      <button class="nav__hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span>
+      </button>
+    </div>
   </nav>
 
   <!-- SCROLL STORY: HERO → ABOUT -->
@@ -334,6 +348,7 @@
     <div class="contact__inner fade-up">
       <h2 class="contact__headline" id="contact-headline">Connect</h2>
       <p class="contact__sub">Got a question or project in mind? Lets chat.</p>
+      <a class="contact__email" id="contact-email" href="mailto:lucascoburn.work@gmail.com">or email lucascoburn.work@gmail.com</a>
     </div>
     <!-- Cursor-following booking button (opens Cal.com popup) -->
     <button class="cursor-btn" id="cursor-btn" type="button" aria-label="Book a call with Lucas Coburn"
@@ -347,6 +362,7 @@
   <!-- FOOTER -->
   <footer class="footer">
     <span>© 2026 Lucas Coburn</span>
+    <a class="footer__email" href="mailto:lucascoburn.work@gmail.com">lucascoburn.work@gmail.com</a>
     <span>Melbourne, Australia</span>
   </footer>
 

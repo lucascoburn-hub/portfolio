@@ -20,6 +20,30 @@ sfx.click2.volume   = 0.1;   // pop-up open click
 let audioStarted = false;
 let ambienceTarget = 0.1; // set each frame by scroll progress
 
+/* ── Sound toggle (remembered per visitor) ── */
+let soundMuted = false;
+try { soundMuted = localStorage.getItem('lc-sound-muted') === '1'; } catch (e) {}
+
+const soundToggle = document.getElementById('sound-toggle');
+
+function applyMute() {
+  Object.values(sfx).forEach(a => { if (a) a.muted = soundMuted; });
+  if (soundToggle) {
+    soundToggle.classList.toggle('is-muted', soundMuted);
+    soundToggle.setAttribute('aria-pressed', String(soundMuted));
+    soundToggle.setAttribute('aria-label', soundMuted ? 'Unmute sound' : 'Mute sound');
+  }
+}
+
+if (soundToggle) {
+  soundToggle.addEventListener('click', () => {
+    soundMuted = !soundMuted;
+    try { localStorage.setItem('lc-sound-muted', soundMuted ? '1' : '0'); } catch (e) {}
+    applyMute();
+  });
+}
+applyMute();
+
 function startAudio() {
   if (audioStarted) return;
   const tryPlay = Promise.all([
@@ -79,7 +103,7 @@ function playPopClick() {
 // scales the already-quiet volume so it fades with visibility.
 let tickCtx = null;
 function playTick(level) {
-  if (!audioStarted || level <= 0.01) return;
+  if (!audioStarted || soundMuted || level <= 0.01) return;
   try {
     tickCtx = tickCtx || new (window.AudioContext || window.webkitAudioContext)();
     const t = tickCtx.currentTime;
@@ -100,7 +124,7 @@ function playTick(level) {
 // or View Work (it gets a single click sound on open instead).
 document.addEventListener('pointerover', e => {
   const t = e.target.closest('a, button, .resource-card');
-  if (!t || t.closest('.cursor-btn') || t.closest('.carousel-btn') || t.closest('.view-work-btn')) return;
+  if (!t || t.closest('.cursor-btn') || t.closest('.carousel-btn') || t.closest('.view-work-btn') || t.closest('.nav__sound')) return;
   if (!(e.relatedTarget && t.contains(e.relatedTarget))) playClick();
 });
 
@@ -735,4 +759,12 @@ document.addEventListener('keydown', e => {
     targetX = e.clientX - rect.left;
     targetY = e.clientY - rect.top;
   });
+
+  // The circle sits under the cursor, so it would intercept clicks on
+  // the email link — hide it while the pointer is over the link.
+  const email = document.getElementById('contact-email');
+  if (email) {
+    email.addEventListener('mouseenter', () => btn.classList.remove('is-visible'));
+    email.addEventListener('mouseleave', () => btn.classList.add('is-visible'));
+  }
 })();
