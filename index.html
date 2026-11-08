@@ -5,6 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lucas Coburn — Creative Director & Video Editor</title>
   <meta name="description" content="Melbourne-based creative director and video editor. Building creator brands through strategic content and precise editing.">
+
+  <!-- Browser tab + home-screen icons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="theme-color" content="#F4EFE6">
+
+  <!-- Link preview card (Instagram DMs, iMessage, LinkedIn, Slack…) -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://lucascoburn.com/">
+  <meta property="og:site_name" content="Lucas Coburn">
+  <meta property="og:title" content="Lucas Coburn — Video Editor &amp; Creative Director">
+  <meta property="og:description" content="Melbourne-based video editor and creative director. 50M+ views generated for creators and brands.">
+  <meta property="og:image" content="https://lucascoburn.com/assets/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Lucas Coburn overlooking a misty mountain lake">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Lucas Coburn — Video Editor &amp; Creative Director">
+  <meta name="twitter:description" content="Melbourne-based video editor and creative director. 50M+ views generated for creators and brands.">
+  <meta name="twitter:image" content="https://lucascoburn.com/assets/og-image.jpg">
+
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -164,7 +186,7 @@
     <button class="carousel-btn carousel-btn--next" id="carousel-next" aria-label="Next client">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="9 6 15 12 9 18"/></svg>
     </button>
-    <div class="carousel-counter" id="carousel-counter"><span id="carousel-current">1</span> / <span id="carousel-total">8</span></div>
+    <nav class="carousel-names" id="carousel-names" aria-label="Jump to client"></nav>
   <div class="carousel-viewport">
   <div class="clients-wrapper" id="clients-track">
 
@@ -214,6 +236,43 @@
       </div>
     </section>
 
+    <!-- HARRISON HIDE -->
+    <section class="client-section" id="harrison">
+      <a class="client-section__media" href="https://www.instagram.com/harrisonhide/" target="_blank" rel="noopener" aria-label="Harrison Hide on Instagram">
+        <div class="client-section__img-wrap">
+          <img src="assets/clients/harrison-hide.jpg" alt="Harrison Hide" loading="lazy" style="object-position: center 22%">
+        </div>
+        <span class="client-section__ig-hint">Instagram ↗</span>
+      </a>
+      <div class="client-section__content">
+        <div class="client-section__tags"><span class="tag">Editing</span></div>
+        <h2 class="client-section__name">Harrison Hide</h2>
+        <p class="client-section__agency">URAL Studios</p>
+        <p class="client-section__desc">Harrison Hide is the co-founder of Long Lane, a company building the future of wellness hospitality. Edited his short-form content — from founder stories to product breakdowns — helping him share the journey of building Long Lane with a verified audience of 193K.</p>
+        <div class="client-section__metric">
+          <span class="metric__to">193K</span>
+          <span class="metric__period">followers</span>
+        </div>
+        <button class="view-work-btn" data-client="harrison">View Work →</button>
+      </div>
+    </section>
+
+    <!-- URAL STUDIOS -->
+    <section class="client-section" id="ural">
+      <a class="client-section__media" href="https://www.instagram.com/byuralstudios/" target="_blank" rel="noopener" aria-label="URAL Studios on Instagram">
+        <div class="client-section__img-wrap client-section__img-wrap--white">
+          <img src="assets/clients/ural-logo.png" alt="URAL Studios" loading="lazy">
+        </div>
+        <span class="client-section__ig-hint">Instagram ↗</span>
+      </a>
+      <div class="client-section__content">
+        <div class="client-section__tags"><span class="tag">Editing</span></div>
+        <h2 class="client-section__name">URAL Studios</h2>
+        <p class="client-section__desc">URAL Studios is a Manchester-based creative studio working with brands, founders and athletes who care about craft — guided by one rule: safe work limits creativity. Edited short-form content for the studio's own channels, bringing its philosophy and point of view to life.</p>
+        <button class="view-work-btn" data-client="ural">View Work →</button>
+      </div>
+    </section>
+
     <!-- FIN KWONG -->
     <section class="client-section client-section--right" id="fin">
       <a class="client-section__media" href="https://www.instagram.com/fin.kwong/" target="_blank" rel="noopener" aria-label="Fin Kwong on Instagram">
@@ -253,43 +312,6 @@
           <span class="metric__period">followers</span>
         </div>
         <button class="view-work-btn" data-client="fon">View Work →</button>
-      </div>
-    </section>
-
-    <!-- HARRISON HIDE -->
-    <section class="client-section" id="harrison">
-      <a class="client-section__media" href="https://www.instagram.com/harrisonhide/" target="_blank" rel="noopener" aria-label="Harrison Hide on Instagram">
-        <div class="client-section__img-wrap">
-          <img src="assets/clients/harrison-hide.jpg" alt="Harrison Hide" loading="lazy" style="object-position: center 22%">
-        </div>
-        <span class="client-section__ig-hint">Instagram ↗</span>
-      </a>
-      <div class="client-section__content">
-        <div class="client-section__tags"><span class="tag">Editing</span></div>
-        <h2 class="client-section__name">Harrison Hide</h2>
-        <p class="client-section__agency">URAL Studios</p>
-        <p class="client-section__desc">Harrison Hide is the co-founder of Long Lane, a company building the future of wellness hospitality. Edited his short-form content — from founder stories to product breakdowns — helping him share the journey of building Long Lane with a verified audience of 193K.</p>
-        <div class="client-section__metric">
-          <span class="metric__to">193K</span>
-          <span class="metric__period">followers</span>
-        </div>
-        <button class="view-work-btn" data-client="harrison">View Work →</button>
-      </div>
-    </section>
-
-    <!-- URAL STUDIOS -->
-    <section class="client-section" id="ural">
-      <a class="client-section__media" href="https://www.instagram.com/byuralstudios/" target="_blank" rel="noopener" aria-label="URAL Studios on Instagram">
-        <div class="client-section__img-wrap client-section__img-wrap--white">
-          <img src="assets/clients/ural-logo.png" alt="URAL Studios" loading="lazy">
-        </div>
-        <span class="client-section__ig-hint">Instagram ↗</span>
-      </a>
-      <div class="client-section__content">
-        <div class="client-section__tags"><span class="tag">Editing</span></div>
-        <h2 class="client-section__name">URAL Studios</h2>
-        <p class="client-section__desc">URAL Studios is a Manchester-based creative studio working with brands, founders and athletes who care about craft — guided by one rule: safe work limits creativity. Edited short-form content for the studio's own channels, bringing its philosophy and point of view to life.</p>
-        <button class="view-work-btn" data-client="ural">View Work →</button>
       </div>
     </section>
 

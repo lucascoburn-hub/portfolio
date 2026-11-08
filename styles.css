@@ -493,7 +493,7 @@ body {
 .clients-scroller {
   position: relative;
   overflow: hidden;
-  padding: 0 48px 64px;
+  padding: 0 48px 76px;
   background: var(--cream);
 }
 .carousel-header {
@@ -553,16 +553,41 @@ body {
 .carousel-btn--prev { left: 64px; }
 .carousel-btn--next { right: 64px; }
 
-.carousel-counter {
+/* Client names under the carousel — click to jump */
+.carousel-names {
   position: absolute;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 22px;
+  left: 48px;
+  right: 48px;
   z-index: 10;
+  display: flex;
+  gap: 26px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+/* Auto margins centre the row when it fits, yet keep it scrollable from
+   the first name when it overflows (justify-content: center would clip it) */
+.carousel-names > :first-child { margin-left: auto; }
+.carousel-names > :last-child  { margin-right: auto; }
+.carousel-names::-webkit-scrollbar { display: none; }
+.carousel-name {
+  flex-shrink: 0;
+  padding: 4px 0;
+  background: none;
+  border: none;
+  border-bottom: 1px solid transparent;
   font-family: var(--font-serif);
-  font-size: 0.8rem;
-  letter-spacing: 0.08em;
+  font-size: 0.88rem;
+  letter-spacing: -0.02em;
   color: var(--storm);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.25s, border-color 0.25s;
+}
+.carousel-name:hover { color: var(--midnight); }
+.carousel-name.is-active {
+  color: var(--midnight);
+  border-bottom-color: var(--midnight);
 }
 
 /* ── CLIENT SECTION ───────────────────────────────────────── */
@@ -1158,7 +1183,7 @@ body {
   .nav__links.open { right: 0; }
   .nav__hamburger { display: flex; z-index: 100; }
 
-  .story { height: 320vh; }
+  .story { height: 220vh; } /* shorter intro on phones — less thumb work to reach the work */
   .nav__meta--center { display: none; }
   .nav__meta { font-size: 0.8rem; }
   .story__name { font-size: clamp(2.6rem, 12vw, 4rem); top: 13vh; }
@@ -1180,7 +1205,9 @@ body {
   .stats__number { font-size: 1.7rem; }
   .stats__label { font-size: 0.75rem; }
 
-  .clients-scroller { padding: 0 16px 48px; }
+  .clients-scroller { padding: 0 16px 64px; }
+  .carousel-names { left: 16px; right: 16px; bottom: 18px; gap: 20px; }
+  .carousel-name { font-size: 0.82rem; }
   .carousel-header { padding: 80px 8px 36px; }
   .client-section {
     grid-template-columns: 1fr;

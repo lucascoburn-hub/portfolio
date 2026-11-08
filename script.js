@@ -124,7 +124,7 @@ function playTick(level) {
 // or View Work (it gets a single click sound on open instead).
 document.addEventListener('pointerover', e => {
   const t = e.target.closest('a, button, .resource-card');
-  if (!t || t.closest('.cursor-btn') || t.closest('.carousel-btn') || t.closest('.view-work-btn') || t.closest('.nav__sound')) return;
+  if (!t || t.closest('.cursor-btn') || t.closest('.carousel-btn') || t.closest('.view-work-btn') || t.closest('.nav__sound') || t.closest('.carousel-name')) return;
   if (!(e.relatedTarget && t.contains(e.relatedTarget))) playClick();
 });
 
@@ -503,21 +503,38 @@ function animateStats(section) {
   const track   = document.getElementById('clients-track');
   const btnPrev = document.getElementById('carousel-prev');
   const btnNext = document.getElementById('carousel-next');
-  const elCur   = document.getElementById('carousel-current');
-  const elTot   = document.getElementById('carousel-total');
+  const namesNav = document.getElementById('carousel-names');
   if (!track || !btnPrev || !btnNext) return;
 
   const panels = Array.from(track.querySelectorAll('.client-section'));
   const total  = panels.length;
   let current  = 0;
 
-  elTot.textContent = total;
+  // One clickable name per client, built from each card's heading
+  const nameBtns = panels.map((panel, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'carousel-name';
+    b.textContent = panel.querySelector('.client-section__name').textContent;
+    b.addEventListener('click', () => goTo(i));
+    if (namesNav) namesNav.appendChild(b);
+    return b;
+  });
 
   function goTo(index, silent) {
     const prev = current;
     current = Math.max(0, Math.min(total - 1, index));
     track.style.transform = `translateX(${-current * track.clientWidth}px)`;
-    elCur.textContent = current + 1;
+    nameBtns.forEach((b, i) => {
+      const on = i === current;
+      b.classList.toggle('is-active', on);
+      if (on) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+    });
+    // Keep the active name in view when the row scrolls (phones)
+    if (namesNav && namesNav.scrollWidth > namesNav.clientWidth) {
+      const b = nameBtns[current];
+      namesNav.scrollTo({ left: b.offsetLeft - (namesNav.clientWidth - b.offsetWidth) / 2, behavior: 'smooth' });
+    }
     btnPrev.disabled = current === 0;
     btnNext.disabled = current === total - 1;
     if (!silent && current !== prev && audioStarted) {
@@ -638,10 +655,11 @@ function openModal(clientKey) {
     item.className = 'modal-video-item';
 
     const thumb = document.createElement('video');
+    thumb.poster      = src.replace('assets/work/', 'assets/work/posters/').replace('.mp4', '.jpg');
     thumb.src         = src;
     thumb.controls    = false;
     thumb.playsinline = true;
-    thumb.preload     = 'metadata';
+    thumb.preload     = 'none'; // the cover image stands in, so skip fetching video data
     thumb.muted       = true;
 
     const playIcon = document.createElement('div');
