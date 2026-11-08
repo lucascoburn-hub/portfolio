@@ -590,14 +590,21 @@ body {
   object-fit: cover !important;
   object-position: center !important;
 }
-/* Emirhan — fill full frame */
-.client-section__img-wrap--fill img {
-  object-fit: cover;
-  object-position: center 20%;
-  transform: scale(1.15);
+/* URAL — logo centred on a plain white panel */
+.client-section__img-wrap--white {
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.client-section__media:hover .client-section__img-wrap--fill img {
-  transform: scale(1.22);
+.client-section__img-wrap--white img {
+  width: 62% !important;
+  height: auto !important;
+  object-fit: contain !important;
+  filter: none !important;
+}
+.client-section__media:hover .client-section__img-wrap--white img {
+  filter: none !important;
 }
 .client-section__ig-hint {
   position: absolute;

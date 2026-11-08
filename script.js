@@ -552,13 +552,25 @@ const clientVideos = {
     'assets/work/bruno-2.mp4',
     'assets/work/bruno-3.mp4',
   ],
+  harrison: [
+    'assets/work/harrison-1.mp4',
+    'assets/work/harrison-2.mp4',
+    'assets/work/harrison-3.mp4',
+  ],
+  ural: [
+    'assets/work/ural-1.mp4',
+    'assets/work/ural-2.mp4',
+    'assets/work/ural-3.mp4',
+  ],
 };
 
 const clientLabels = {
   james: 'James Magnussen',
   fin:   'Fin Kwong',
   fon:   'First or Nothing',
-  bruno: 'Bruno Casanovas',
+  bruno:    'Bruno Casanovas',
+  harrison: 'Harrison Hide',
+  ural:     'URAL Studios',
 };
 
 const backdrop        = document.getElementById('modal-backdrop');
